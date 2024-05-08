@@ -20,24 +20,20 @@ public class ProjectEntity {
     private Integer id;
 
     @Column(length = 200)
-    private String issueTitle;
+    private String projectTitle;
 
     @Column(columnDefinition = "TEXT")
-    private String issueDescription;
+    private String projectDescription;
 
-//    private User reporter;
+//    private User admin;
 
     private LocalDateTime reportedDate;
 
-//    private User fixer;
+//    private User PLUser;
 
-//    private User Assignee;
+//    private User devUser;
 
-    @Column(length = 200)
-    private String Priority;
+//    private User testUser;
 
-    @Column(length = 200)
-    private String Status;
-
-//    private Comment comments;
+//    private IssueEntity issue;
 }
