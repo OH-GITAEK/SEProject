@@ -1,12 +1,10 @@
 package com.example.seproject.project;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.seproject.issue.IssueEntity;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,5 +33,6 @@ public class ProjectEntity {
 
 //    private User testUser;
 
-//    private IssueEntity issue;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+    private List<IssueEntity> issueList;
 }

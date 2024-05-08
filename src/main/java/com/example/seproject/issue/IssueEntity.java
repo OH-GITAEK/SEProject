@@ -1,12 +1,18 @@
 package com.example.seproject.issue;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.example.seproject.comment.CommentEntity;
+import com.example.seproject.project.ProjectEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,5 +45,9 @@ public class IssueEntity {
     @Column(length = 200)
     private String Status;
 
-//    private Comment comments;
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
+    private List<CommentEntity> commentList;
+
+    @ManyToOne
+    private ProjectEntity project;
 }
