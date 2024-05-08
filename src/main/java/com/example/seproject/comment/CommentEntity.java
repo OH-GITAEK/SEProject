@@ -1,4 +1,4 @@
-package com.example.seproject.issue;
+package com.example.seproject.comment;
 
 import java.time.LocalDateTime;
 
@@ -14,30 +14,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class IssueEntity {
+public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 200)
-    private String issueTitle;
-
     @Column(columnDefinition = "TEXT")
-    private String issueDescription;
-
-//    private User reporter;
+    private String comment;
 
     private LocalDateTime reportedDate;
 
-//    private User fixer;
-
-//    private User Assignee;
-
-    @Column(length = 200)
-    private String Priority;
-
-    @Column(length = 200)
-    private String Status;
-
-//    private Comment comments;
+    //    private User fixer;
 }
