@@ -3,7 +3,7 @@ package com.example.seproject.project;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.seproject.issue.IssueEntity;
+import com.example.seproject.issue.Issue;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class ProjectEntity {
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -34,5 +34,5 @@ public class ProjectEntity {
 //    private User testUser;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    private List<IssueEntity> issueList;
+    private List<Issue> issueList;
 }

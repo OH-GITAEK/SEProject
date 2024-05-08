@@ -3,8 +3,8 @@ package com.example.seproject.issue;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.seproject.comment.CommentEntity;
-import com.example.seproject.project.ProjectEntity;
+import com.example.seproject.comment.Comment;
+import com.example.seproject.project.Project;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class IssueEntity {
+public class Issue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -46,8 +46,8 @@ public class IssueEntity {
     private String Status;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
-    private List<CommentEntity> commentList;
+    private List<Comment> commentList;
 
     @ManyToOne
-    private ProjectEntity project;
+    private Project project;
 }

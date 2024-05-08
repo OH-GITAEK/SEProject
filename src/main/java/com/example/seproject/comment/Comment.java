@@ -2,7 +2,7 @@ package com.example.seproject.comment;
 
 import java.time.LocalDateTime;
 
-import com.example.seproject.issue.IssueEntity;
+import com.example.seproject.issue.Issue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class CommentEntity {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,5 +29,5 @@ public class CommentEntity {
     //    private User fixer;
 
     @ManyToOne
-    private IssueEntity issue;
+    private Issue issue;
 }
