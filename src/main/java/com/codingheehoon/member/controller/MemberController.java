@@ -37,4 +37,9 @@ public class MemberController {
         return "index";
     }
 
+    @PostMapping("/member/login") // login.html에서 요청한 걸 받아주는 메서드
+    public String login(@ModelAttribute MemberDTO memberDTO){
+        
+    }
+
 }
