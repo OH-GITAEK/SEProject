@@ -22,6 +22,6 @@ public class MemberEntity { //
     @Column
     private String memberName;
 
-
+    ///;;;
 
 }
