@@ -18,7 +18,7 @@ public class ProjectController {
     }
 
     @GetMapping("/api/projects/{id}")
-    public Project detail(@PathVariable Integer id){
+    public Project detail(@PathVariable Long id){
         return projectService.getProject(id);
     }
 

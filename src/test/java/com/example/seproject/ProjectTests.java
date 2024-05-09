@@ -33,7 +33,7 @@ public class ProjectTests {
 
     @Test
     void testUpdateProject(){
-        Optional<Project> updateProject = this.projectRepository.findById(1);
+        Optional<Project> updateProject = this.projectRepository.findById(1L);
         assertTrue(updateProject.isPresent());
         Project p = updateProject.get();
         p.setProjectTitle("수정 후 제목");
@@ -42,7 +42,7 @@ public class ProjectTests {
 
     @Test
     void testDeleteProject() {
-        Optional<Project> deleteProject = this.projectRepository.findById(1);
+        Optional<Project> deleteProject = this.projectRepository.findById(1L);
         assertTrue(deleteProject.isPresent());
         Project p = deleteProject.get();
         this.projectRepository.delete(p);
