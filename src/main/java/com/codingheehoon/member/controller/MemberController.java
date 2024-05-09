@@ -2,12 +2,14 @@ package com.codingheehoon.member.controller;
 
 import com.codingheehoon.member.dto.MemberDTO;
 import com.codingheehoon.member.service.MemberService;
+import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,9 +39,44 @@ public class MemberController {
         return "index";
     }
 
-    @PostMapping("/member/login") // login.html에서 요청한 걸 받아주는 메서드
-    public String login(@ModelAttribute MemberDTO memberDTO){
-        // dd
+    @GetMapping("/member/login")
+    public String loginForm(){
+        return "login";
     }
 
+    @PostMapping("/member/login") // login.html에서 요청한 걸 받아주는 메서드
+    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
+        MemberDTO loginResult=memberService.login(memberDTO);
+        if(loginResult!=null){
+            // login 성긍
+            session.setAttribute("loginEmail",loginResult.getMemberEmail());
+            return "main";
+        }
+        else{
+            return "login";
+        }
+    }
+
+    @GetMapping("/member/")
+    public String findAll(Model model){
+        List<MemberDTO> memberDTOList=memberService.findAll();
+        // 어떠한 html로 가져갈 데이터가 있다면 model 사용
+        model.addAttribute("memberList",memberDTOList);
+        return "list";
+    }
+
+    @GetMapping("/member/{id}") // 경로 상에 있는 값을 다음과 같이 담아온다라는 의미
+    public String findById(@PathVariable Long id,Model model){
+        MemberDTO memberDTO=memberService.findById(id);
+        model.addAttribute("member",memberDTO);
+        return "detail";
+        // detail이라는 html로 가져간다.
+    }
+
+    @GetMapping("/member/update")
+    public String updateForm(HttpSession session,Model model){
+        String myEmail = (String)session.getAttribute("loginEmail");
+        MemberDTO memberDTO=memberService.updateForm(myEmail);
+        model.addAttribute("updateMember",memberDTO);
+    }
 }
