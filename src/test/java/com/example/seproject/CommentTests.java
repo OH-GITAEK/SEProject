@@ -23,7 +23,7 @@ public class CommentTests {
 
     @Test
     void testCreateComment(){
-        Optional<Issue> issue = this.issueRepository.findById(2);
+        Optional<Issue> issue = this.issueRepository.findById(2L);
         assertTrue(issue.isPresent());
         Issue i = issue.get();
 
