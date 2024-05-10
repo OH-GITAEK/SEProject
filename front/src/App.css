@@ -1,0 +1,54 @@
+.App {
+  text-align: center;
+}
+
+body {
+  display: flex;
+  font-family: 'Arial', sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #A4A4A4;
+  padding: 20px;
+  height: 100vh;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.login {
+  display: block;
+  padding: 100px;
+  border: dotted;
+  position: relative;
+  top: 50px;
+}
+
+.menu a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+  margin: 5px 0;
+  position: relative;
+  top: 100px;
+  border: 1px solid;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: white;
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  line-height: 1.5;
+  color: #666;
+}
