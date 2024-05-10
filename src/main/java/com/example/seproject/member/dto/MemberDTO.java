@@ -1,7 +1,7 @@
-package com.codingheehoon.member.dto;
+package com.example.seproject.member.dto;
 
 
-import com.codingheehoon.member.entity.MemberEntity;
+import com.example.seproject.member.entity.MemberEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

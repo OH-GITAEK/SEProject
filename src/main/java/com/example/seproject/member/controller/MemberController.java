@@ -1,9 +1,8 @@
-package com.codingheehoon.member.controller;
+package com.example.seproject.member.controller;
 
-import com.codingheehoon.member.dto.MemberDTO;
-import com.codingheehoon.member.service.MemberService;
+import com.example.seproject.member.dto.MemberDTO;
+import com.example.seproject.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

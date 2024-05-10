@@ -1,10 +1,9 @@
-package com.codingheehoon.member.service;
+package com.example.seproject.member.service;
 
-import com.codingheehoon.member.dto.MemberDTO;
-import com.codingheehoon.member.entity.MemberEntity;
-import com.codingheehoon.member.repository.MemberRepository;
+import com.example.seproject.member.dto.MemberDTO;
+import com.example.seproject.member.entity.MemberEntity;
+import com.example.seproject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.Member;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

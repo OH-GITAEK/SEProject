@@ -1,4 +1,4 @@
-package com.codingheehoon.member.controller;
+package com.example.seproject.member.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

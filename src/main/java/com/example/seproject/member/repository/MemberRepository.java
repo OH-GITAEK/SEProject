@@ -1,6 +1,6 @@
-package com.codingheehoon.member.repository;
+package com.example.seproject.member.repository;
 
-import com.codingheehoon.member.entity.MemberEntity;
+import com.example.seproject.member.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

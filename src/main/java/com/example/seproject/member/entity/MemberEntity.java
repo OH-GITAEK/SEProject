@@ -1,6 +1,6 @@
-package com.codingheehoon.member.entity;
+package com.example.seproject.member.entity;
 
-import com.codingheehoon.member.dto.MemberDTO;
+import com.example.seproject.member.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
