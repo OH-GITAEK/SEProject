@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+
 @RequiredArgsConstructor
 public class MemberController {
     // 생성자 주입
@@ -79,4 +80,19 @@ public class MemberController {
         model.addAttribute("updateMember",memberDTO);
         return "index";
     }
+
+    @GetMapping("/member/delete/{id}")
+    public String deleteById(@PathVariable Long id){
+        memberService.deleteById(id);
+        return "redirect:/member/";
+    }
+
+    @GetMapping("/member/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "index";
+    }
+
+
+
 }
