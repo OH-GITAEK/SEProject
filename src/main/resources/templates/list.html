@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>list.html</h2>
+<table>
+    <tr>
+        <th>id</th>
+        <th>memberEmail</th>
+        <th>memberPassword</th>
+        <th>memberName</th>
+        <th>상세조회</th>
+        <th>삭제</th>
+    </tr>
+    <tr th:each="member: ${memberList}">
+        <td th:text="${member.id}"></td>
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberPassword}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td>
+            <!-- query string /member?id=1
+                rest api /member/1
+                rest api: 주소만으로 어떠한 자원인지를 식별하자.
+                -->
+            <a th:href="@{|/member/${member.id}|}">조회</a>
+            <!--
+            경로상에 모델 값을 표현하고자 할 때 서버에서 가져온 데이터를 같이 표현하고자 할 때
+            |로 시작하고 |로 끝난다.
+            -->
+        </td>
+        <td>
+            <a th:href="@{|/member/delete/${member.id}|}">삭제</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
