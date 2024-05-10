@@ -2,37 +2,85 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-family: 'Arial', sans-serif;
+}
+
+.sidebar {
+  width: 350px;
+  border: 2px solid #ccc; /* 점선 대신 실선 사용 */
+  padding: 20px;
+  height: 100%;
+  position: fixed; /* 고정 위치 */
+  left: 0;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.login {
+  display: block;
+  margin: 20px 0; /* 중앙 정렬을 위해 자동 마진 사용 */
+  padding: 50px; /* 패딩을 조금 줄여 더 깔끔하게 */
+  width: 250px; /* 적당한 폭 설정 */
+  border: 2px solid #ccc; /* 점선 대신 실선 사용 */
+  border-radius: 10px; /* 모서리를 둥글게 */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 추가 */
+  position: relative;
+  top: 50px; /* 필요에 따라 조정 */
+  left: 0;
+  background: #f9f9f9; /* 배경색 추가 */
+}
+
+/* 필요한 경우 추가적인 스타일 지정 */
+input[type="text"], input[type="password"] {
+  width: 100%; /* 입력 필드 폭을 컨테이너에 맞춤 */
+  padding: 10px; /* 편안한 타이핑을 위해 패딩 추가 */
+  margin-bottom: 10px; /* 입력 필드 간 간격 */
+  border: 1px solid #ccc; /* 경계선 스타일 */
+  border-radius: 5px; /* 입력 필드 모서리 둥글게 */
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50; /* 버튼 색상 변경 */
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; /* 클릭 가능 표시 */
 }
 
-.App-link {
-  color: #61dafb;
+input[type="submit"]:hover {
+  background-color: #45a049; /* 버튼에 마우스를 올렸을 때 색상 변경 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.menu a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+  margin: 20px 0;
+  position: relative;
+  top: 100px;
+  border: 1px solid;
+  border-radius: 10px; /* 모서리를 둥글게 */
+}
+
+
+h1 {
+  color: #333;
+}
+
+p {
+  line-height: 1.5;
+  color: #666;
+}
+/*게시판 css*/
+.table{
+  position: fixed;
+  left: 50%;
 }
