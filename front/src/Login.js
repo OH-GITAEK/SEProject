@@ -7,7 +7,7 @@ function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('Submitting', userId, password);
-    // 여기에 로그인 로직을 추가할 것
+    // 여기에 로그인 로직을 추가
   };
 
   return (
