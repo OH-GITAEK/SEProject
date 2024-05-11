@@ -80,7 +80,66 @@ p {
   color: #666;
 }
 /*게시판 css*/
-.table{
+.root{
   position: fixed;
-  left: 50%;
+  left: 30%;
+
+  width: 100%;
+  overflowX: 'auto';
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Root container styles */
+.root {
+  max-width: 800px; /* Adjust according to your layout */
+  margin: 0 auto;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+
+  minWidth: 1080px;
+}
+
+/* Table head styles */
+.head {
+  background-color: #f0f0f0;
+}
+
+/* Table row styles */
+.row {
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table cell styles */
+.cell {
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+/* Last cell in each row */
+.cell:last-child {
+  border-right: none;
+}
+
+/* Alternate row background color */
+.row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+
+
+
+
+
+
+
