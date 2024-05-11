@@ -52,6 +52,7 @@ input[type="submit"] {
   border: none;
   border-radius: 5px;
   cursor: pointer; /* 클릭 가능 표시 */
+
 }
 
 input[type="submit"]:hover {
@@ -70,7 +71,6 @@ input[type="submit"]:hover {
   border-radius: 10px; /* 모서리를 둥글게 */
 }
 
-
 h1 {
   color: #333;
 }
@@ -79,8 +79,71 @@ p {
   line-height: 1.5;
   color: #666;
 }
-/*게시판 css*/
-.table{
-  position: fixed;
-  left: 50%;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Root container styles */
+.root {
+  max-width: 800px; /* Adjust according to your layout */
+  margin: 0 auto;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+
+  minWidth: 1080px;
+}
+
+/* Table head styles */
+.head {
+  background-color: #f0f0f0;
+}
+
+/* Table row styles */
+.row {
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table cell styles */
+.cell {
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+/* Last cell in each row */
+.cell:last-child {
+  border-right: none;
+}
+
+/* Alternate row background color */
+.row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.menu a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+  margin: 20px 0;
+  position: relative;
+  top: 100px;
+  border: 1px solid;
+  border-radius: 10px; /* 모서리를 둥글게 */
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  line-height: 1.5;
+  color: #666;
 }
