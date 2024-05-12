@@ -7,11 +7,13 @@ import com.example.seproject.issue.Issue;
 import jakarta.persistence.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +35,13 @@ public class Project {
 
 //    private User testUser;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    private List<Issue> issueList;
+//    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+//    private List<Issue> issueList;
+
+    public Project(Long id, String projectTitle, String projectDescription){
+        this.id = id;
+        this.projectTitle = projectTitle;
+        this.projectDescription = projectDescription;
+        this.reportedDate = LocalDateTime.now();
+    }
 }

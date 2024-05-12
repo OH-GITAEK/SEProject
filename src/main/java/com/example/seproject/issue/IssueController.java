@@ -17,22 +17,20 @@ public class IssueController {
     private final ProjectService projectService;
 
     @GetMapping("/api/projects/{projectId}/issues")
-    public List<Issue> list(@PathVariable("projectId") Long projectId){
-        Project project = projectService.getProject(projectId);
-        return project.getIssueList();
+    public List<IssueForm> list(@PathVariable("projectId") Long projectId){
+        return issueService.getList(projectId);
     }
 
     @GetMapping("/api/projects/{projectId}/issues/{id}")
-    public Issue detail(@PathVariable("id") Long id){
+    public IssueForm detail(@PathVariable("id") Long id){
         return issueService.getIssue(id);
     }
 
     @PostMapping("api/projects/{projectId}/issues/create")
-    public Issue create(@Valid @RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("projectId") Long projectId){
+    public IssueForm create(@Valid @RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("projectId") Long projectId){
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Validation failed");
         }
-        Project project = this.projectService.getProject(projectId);
-        return issueService.create(issueForm.getIssueTitle(), issueForm.getIssueDescription(),issueForm.getPriority(),issueForm.getStatus(), project);
+        return issueService.create(projectId,issueForm);
     }
 }

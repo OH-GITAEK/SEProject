@@ -19,7 +19,7 @@ public class ProjectController {
     }
 
     @GetMapping("/api/projects/{id}")
-    public Project detail(@PathVariable Long id){
+    public ProjectForm detail(@PathVariable Long id){
         return projectService.getProject(id);
     }
 
@@ -28,6 +28,6 @@ public class ProjectController {
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Validation failed");
         }
-        return projectService.create(projectForm.getProjectTitle(), projectForm.getProjectDescription());
+        return projectService.create(projectForm);
     }
 }
