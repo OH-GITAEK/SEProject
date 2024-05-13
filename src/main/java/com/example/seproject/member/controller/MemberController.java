@@ -48,7 +48,7 @@ public class MemberController {
     public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         MemberDTO loginResult=memberService.login(memberDTO);
         if(loginResult!=null){
-            // login 성긍
+            // login 성공
             session.setAttribute("loginEmail",loginResult.getMemberEmail());
             return "main";
         }
