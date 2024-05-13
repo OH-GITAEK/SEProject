@@ -23,7 +23,7 @@ public class CommentTests {
 
     @Test
     void testCreateComment(){
-        Optional<Issue> issue = this.issueRepository.findById(2);
+        Optional<Issue> issue = this.issueRepository.findById(2L);
         assertTrue(issue.isPresent());
         Issue i = issue.get();
 
@@ -42,7 +42,7 @@ public class CommentTests {
 
     @Test
     void testUpdateComment(){
-        Optional<Comment> updateComment = this.commentRepository.findById(2);
+        Optional<Comment> updateComment = this.commentRepository.findById(2L);
         assertTrue(updateComment.isPresent());
         Comment p = updateComment.get();
         p.setComment("수정 후 코멘트");
@@ -51,7 +51,7 @@ public class CommentTests {
 
     @Test
     void testDeletecomment() {
-        Optional<Comment> deleteComment = this.commentRepository.findById(1);
+        Optional<Comment> deleteComment = this.commentRepository.findById(1L);
         assertTrue(deleteComment.isPresent());
         Comment p = deleteComment.get();
         this.commentRepository.delete(p);

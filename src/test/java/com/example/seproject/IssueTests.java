@@ -22,7 +22,7 @@ public class IssueTests {
 
     @Test
     void testCreateIssue(){
-        Optional<Project> project = this.projectRepository.findById(4);
+        Optional<Project> project = this.projectRepository.findById(4L);
         assertTrue(project.isPresent());
         Project p =project.get();
 
@@ -47,7 +47,7 @@ public class IssueTests {
 
     @Test
     void testUpdateIssue(){
-        Optional<Issue> updateIssue = this.issueRepository.findById(1);
+        Optional<Issue> updateIssue = this.issueRepository.findById(1L);
         assertTrue(updateIssue.isPresent());
         Issue p = updateIssue.get();
         p.setIssueTitle("수정 후 제목");
@@ -55,8 +55,8 @@ public class IssueTests {
     }
 
     @Test
-    void testDeleteissue() {
-        Optional<Issue> deleteIssue = this.issueRepository.findById(1);
+    void testDeleteIssue() {
+        Optional<Issue> deleteIssue = this.issueRepository.findById(1L);
         assertTrue(deleteIssue.isPresent());
         Issue p = deleteIssue.get();
         this.issueRepository.delete(p);
