@@ -1,6 +1,5 @@
 package com.example.seproject.issue;
 
-import com.example.seproject.project.Project;
 import com.example.seproject.project.ProjectService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -14,7 +13,6 @@ import java.util.List;
 @RestController
 public class IssueController {
     private final IssueService issueService;
-    private final ProjectService projectService;
 
     @GetMapping("/api/projects/{projectId}/issues")
     public List<IssueForm> list(@PathVariable("projectId") Long projectId){

@@ -41,8 +41,8 @@ public class Issue {
     @Column(length = 200)
     private String status;
 
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
-    private List<Comment> commentList;
+//    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
+//    private List<Comment> commentList;
 
     @ManyToOne
     @JoinColumn(name="project_id")
@@ -63,7 +63,7 @@ public class Issue {
         if (issueForm.getId() != null)
             throw new IllegalArgumentException("이슈 생성 실패! 이슈의 id가 없어야 합니다.");
         if (issueForm.getProjectId() != project.getId())
-            throw new IllegalArgumentException("댓글 생성 실패! 프로젝트의 id가 잘못됐습니다.");
+            throw new IllegalArgumentException("이슈 생성 실패! 프로젝트의 id가 잘못됐습니다.");
 
         return new Issue(
                 issueForm.getId(),

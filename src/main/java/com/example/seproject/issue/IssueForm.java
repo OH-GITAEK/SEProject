@@ -1,6 +1,5 @@
 package com.example.seproject.issue;
 
-import com.example.seproject.comment.Comment;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
