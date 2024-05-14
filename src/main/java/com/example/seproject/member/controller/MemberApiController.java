@@ -38,7 +38,7 @@ public class MemberApiController {
     public ResponseEntity<String> login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         MemberDTO loginResult = memberService.login(memberDTO);
         if(loginResult != null){
-            session.setAttribute("loginEmail", loginResult.getMemberEmail());
+            session.setAttribute("memberName", loginResult.getMemberName());
             return ResponseEntity.ok("메인 페이지로 리다이렉트 대신 성공 메시지");
         } else {
             return ResponseEntity.badRequest().body("로그인 실패 메시지");
@@ -59,8 +59,10 @@ public class MemberApiController {
 
     @GetMapping("/update")
     public ResponseEntity<MemberDTO> updateForm(HttpSession session){
-        String myEmail = (String)session.getAttribute("loginEmail");
-        MemberDTO memberDTO = memberService.updateForm(myEmail);
+        String myMemberName=(String)session.getAttribute("memberName");
+        MemberDTO memberDTO=memberService.updateForm(myMemberName);
+        //String myEmail = (String)session.getAttribute("loginEmail");
+        //MemberDTO memberDTO = memberService.updateForm(myEmail);
         return ResponseEntity.ok(memberDTO);
     }
 
