@@ -2,12 +2,16 @@ package com.example.seproject.project;
 
 import com.example.seproject.issue.IssueForm;
 import com.example.seproject.issue.IssueService;
+import com.example.seproject.member.entity.MemberEntity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,14 +28,29 @@ public class ProjectForm {
 
     private List<IssueForm> issueList;
 
+    private MemberEntity admin;
+
+    private LocalDateTime reportedDate;
+
+    private List<MemberEntity> PLUser;
+
+    private List<MemberEntity> devUser;
+
+    private List<MemberEntity> testUser;
+
     public ProjectForm(Project project, Long projectId) {
         this.id = projectId;
         this.projectTitle = project.getProjectTitle();
         this.projectDescription = project.getProjectDescription();
+        this.reportedDate = project.getReportedDate();
+        this.admin = project.getAdmin();
+        this.PLUser = project.getPLUser();
+        this.devUser = project.getDevUser();
+        this.testUser = project.getTestUser();
     }
 
     public Project toEntity(){
-        return new Project(id,projectTitle,projectDescription);
+        return new Project(id,projectTitle,projectDescription,admin,PLUser,devUser,testUser);
     }
 
 //    public static ProjectForm showProject(Project project, Long projectId){
