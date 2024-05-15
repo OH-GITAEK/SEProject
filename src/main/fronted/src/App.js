@@ -1,31 +1,21 @@
-import {useEffect, useState} from "react";
-import axios from "axios";
 import './App.css';
-import MenuBar from "./Components/MenuBar";
 import Board from "./Components/Board";
 import BoardDetail from "./Components/BoardDetail";
 // yarn add react-router-dom
-import {BrowserRouter, Route, Routes, Outlet} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
+import Signup from "./page/Signup";
+import MenuBar from "./Components/MenuBar";
+import React from "react";
 
 function App() {
-  const [hello, setHello] = useState('No data');
-
-  useEffect(() => {
-    axios.get('/api/test')
-        .then((res) => {
-          setHello(res.data);
-        })
-  }, []);
-
   return (
       <div className="App">
-          <BrowserRouter>
-              <MenuBar/>
+          <MenuBar/>
               <Routes>
                   <Route path="/" element={<Board/>} />
                   <Route path="/board" element={<BoardDetail/>} />
+                  <Route path="/page/Signup" element={<Signup/>} />
               </Routes>
-          </BrowserRouter>
       </div>
   );
 }
