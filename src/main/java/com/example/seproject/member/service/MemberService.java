@@ -75,7 +75,8 @@ public class MemberService {
             return null;
         }
     }
-    public MemberDTO updateForm(String myEmail) {
+    public MemberDTO updateForm(String memberName) { // myEmail 대신 myMemberName으로
+        /*
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(myEmail);
         if(optionalMemberEntity.isPresent()){
             return MemberDTO.toMemberDTO(optionalMemberEntity.get());
@@ -83,6 +84,17 @@ public class MemberService {
         else{
             return null;
         }
+
+        */
+
+        Optional<MemberEntity> optionalMemberEntity=memberRepository.findByMemberName(memberName);
+        if(optionalMemberEntity.isPresent()){
+            return MemberDTO.toMemberDTO(optionalMemberEntity.get());
+        }
+        else{
+            return null;
+        }
+
     }
 
     public void update(MemberDTO memberDTO) {

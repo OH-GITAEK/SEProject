@@ -49,7 +49,7 @@ public class MemberController {
         MemberDTO loginResult=memberService.login(memberDTO);
         if(loginResult!=null){
             // login 성공
-            session.setAttribute("loginEmail",loginResult.getMemberEmail());
+            session.setAttribute("memberName",loginResult.getMemberName());
             return "main";
         }
         else{
@@ -75,8 +75,12 @@ public class MemberController {
 
     @GetMapping("/member/update")
     public String updateForm(HttpSession session,Model model){
-        String myEmail = (String)session.getAttribute("loginEmail");
-        MemberDTO memberDTO=memberService.updateForm(myEmail);
+        //String myEmail = (String)session.getAttribute("loginEmail");
+
+        //MemberDTO memberDTO=memberService.updateForm(myEmail);
+        // 이메일 대신 멤버 이름으로 업데이트하기
+        String myMemberName=(String)session.getAttribute("memberName");
+        MemberDTO memberDTO=memberService.updateForm(myMemberName);
         model.addAttribute("updateMember",memberDTO);
         return "index";
     }
