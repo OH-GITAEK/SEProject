@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { isMenuOpen } from './MenuBar.js';
+import Writing from "./Writing";
 
 function Board() {
     const [hello, setHello] = useState('No data');
@@ -22,28 +23,7 @@ function Board() {
 
     return (
         <div className='root'>
-            <table className="table">
-                <thead className="head">
-                <tr className="rowhead">
-                    <td className="cell">Title</td>
-                    <td className="cell">Description</td>
-                    <td className="cell">Reporter</td>
-                    <td className="cell">ReportedDate</td>
-                    <td className="cell">Comment</td>
-                    <td className="cell">History</td>
-                </tr>
-                </thead>
-                <tbody className="body">
-                <tr className="row" onClick={handleRowClick}>
-                    <td className="cell">{hello}</td>
-                    <td className="cell">{hello}</td>
-                    <td className="cell">{hello}</td>
-                    <td className="cell">{hello}</td>
-                    <td className="cell">{hello}</td>
-                    <td className="cell">{hello}</td>
-                </tr>
-                </tbody>
-            </table>
+            <Writing></Writing>
         </div>
     );
 

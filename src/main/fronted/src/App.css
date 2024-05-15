@@ -6,47 +6,14 @@ body {
   display: flex;
   font-family: 'Arial', sans-serif;
 }
-/* 화면 크기가 줄어들면 sidebar줄어들게 구현 */
-.top-left {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000; /* 메뉴가 다른 요소 위에 표시되도록 */
-}
 
-/* 사이드바 옆에 메뉴 아이콘 위치 */
-.next-to-sidebar {
-  position: fixed;
-  top: 0;
-  left: 400px; /* sidebar의 너비에 맞춰 조절 */
-  z-index: 1000; /* 메뉴가 다른 요소 위에 표시되도록 */
-}
-
-/* 사이드바  */
 .sidebar {
-  position: fixed; /* 고정 위치 */
   width: 350px;
   border: 2px solid #ccc; /* 점선 대신 실선 사용 */
   padding: 20px;
   height: 100%;
-  top: 0;
+  position: fixed; /* 고정 위치 */
   left: 0;
-  z-index: 999;
-}
-
-/* 작은화면에서 사이드바 아이콘으로 키고끄기 */
-.bar-toggle {
-  display: none; /* 기본적으로 숨김 */
-  cursor: pointer;
-}
-
-@media (max-width: 1000px) {
-  .bar {
-    display: none; /* 작은 화면에서는 메뉴 숨기기 */
-}
-.bar-toggle {
-    display: block; /* 작은 화면에서만 토글 버튼 보이기 */
-}
 }
 
 .logo {
@@ -56,31 +23,28 @@ body {
 
 .login {
   display: block;
-  margin: 20px auto; /* 중앙 정렬을 위해 자동 마진 사용 */
+  margin: 20px 0; /* 중앙 정렬을 위해 자동 마진 사용 */
   padding: 50px; /* 패딩을 조금 줄여 더 깔끔하게 */
-  width: 70%; /* 적당한 폭 설정 */
+  width: 250px; /* 적당한 폭 설정 */
   border: 2px solid #ccc; /* 점선 대신 실선 사용 */
   border-radius: 10px; /* 모서리를 둥글게 */
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 추가 */
   position: relative;
   top: 50px; /* 필요에 따라 조정 */
-  left: auto;
+  left: 0;
   background: #f9f9f9; /* 배경색 추가 */
-  z-index: 1000;
 }
 
 /* 필요한 경우 추가적인 스타일 지정 */
 input[type="text"], input[type="password"] {
-  width: 70%; /* 입력 필드 폭을 컨테이너에 맞춤 */
+  width: 100%; /* 입력 필드 폭을 컨테이너에 맞춤 */
   padding: 10px; /* 편안한 타이핑을 위해 패딩 추가 */
   margin-bottom: 10px; /* 입력 필드 간 간격 */
+  border: 1px solid #ccc; /* 경계선 스타일 */
   border-radius: 5px; /* 입력 필드 모서리 둥글게 */
-  position: relative;
-  left: 0;
 }
 
 input[type="submit"] {
-  margin-top: 5px;
   width: 100%;
   padding: 10px;
   background-color: #4CAF50; /* 버튼 색상 변경 */
@@ -94,16 +58,18 @@ input[type="submit"]:hover {
   background-color: #45a049; /* 버튼에 마우스를 올렸을 때 색상 변경 */
 }
 
-
 .menu a {
   display: block;
   padding: 10px;
   color: black;
   text-decoration: none;
   margin: 20px 0;
+  position: relative;
+  top: 100px;
   border: 1px solid;
   border-radius: 10px; /* 모서리를 둥글게 */
 }
+
 
 h1 {
   color: #333;
@@ -113,13 +79,25 @@ p {
   line-height: 1.5;
   color: #666;
 }
+/*게시판 css*/
+.root{
+  position: fixed;
+  left: 30%;
+
+  width: 100%;
+  overflowX: 'auto';
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 /* Root container styles */
 .root {
   max-width: 800px; /* Adjust according to your layout */
   margin: 0 auto;
-  position: absolute; /* 고정 위치 */
-  left: 30%;
 }
 
 /* Table styles */
@@ -127,6 +105,8 @@ p {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+
+  minWidth: 1080px;
 }
 
 /* Table head styles */
@@ -137,7 +117,6 @@ p {
 /* Table row styles */
 .row {
   border-bottom: 1px solid #ddd;
-  cursor: pointer; /* 클릭 가능 표시 */
 }
 
 /* Table cell styles */
@@ -156,28 +135,11 @@ p {
   background-color: #f9f9f9;
 }
 
-.menu a {
-  display: block;
-  padding: 10px;
-  color: black;
-  text-decoration: none;
-  margin: 20px 0;
-  position: relative;
-  top: 100px;
-  border: 1px solid;
-  border-radius: 10px; /* 모서리를 둥글게 */
-}
-#signup {
-  position: relative;
-  top: 10px;
-  text-decoration: none;
-}
 
-h1 {
-  color: #333;
-}
 
-p {
-  line-height: 1.5;
-  color: #666;
-}
+
+
+
+
+
+
