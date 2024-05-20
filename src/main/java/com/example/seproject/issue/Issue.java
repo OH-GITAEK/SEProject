@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.seproject.comment.Comment;
+import com.example.seproject.member.entity.MemberEntity;
 import com.example.seproject.project.Project;
 import jakarta.persistence.*;
 
@@ -27,13 +28,16 @@ public class Issue {
     @Column(columnDefinition = "TEXT")
     private String issueDescription;
 
-//    private User reporter;
+    @ManyToOne
+    private MemberEntity reporter;
 
     private LocalDateTime reportedDate;
 
-//    private User fixer;
+    @ManyToOne
+    private MemberEntity fixer;
 
-//    private User Assignee;
+    @ManyToOne
+    private MemberEntity assignee;
 
     @Column(length = 200)
     private String priority;
@@ -48,22 +52,22 @@ public class Issue {
     @JoinColumn(name="project_id")
     private Project project;
 
-    public Issue(Long id, String issueTitle, String issueDescription, String priority, String status, Project project) {
+    public Issue(Long id, String issueTitle, String issueDescription, String priority, String status, Project project, MemberEntity reporter,MemberEntity fixer,MemberEntity assignee) {
         this.id = id;
         this.issueTitle = issueTitle;
         this.issueDescription = issueDescription;
         this.reportedDate = LocalDateTime.now();
-        this.priority = priority;
-        this.status = status;
+        if(priority.isEmpty()) this.priority = "major";
+        else this.priority = priority;
+        if(status.isEmpty()) this.status = "new";
+        else this.status = status;
         this.project = project;
+        this.reporter = reporter;
+        this.fixer = fixer;
+        this.assignee = assignee;
     }
 
-    public static Issue createIssue(IssueForm issueForm, Project project) {
-        // 예외 발생
-        if (issueForm.getId() != null)
-            throw new IllegalArgumentException("이슈 생성 실패! 이슈의 id가 없어야 합니다.");
-        if (issueForm.getProjectId() != project.getId())
-            throw new IllegalArgumentException("이슈 생성 실패! 프로젝트의 id가 잘못됐습니다.");
+    public static Issue createIssue(IssueForm issueForm, Project project, MemberEntity reporter,MemberEntity fixer,MemberEntity assignee){
 
         return new Issue(
                 issueForm.getId(),
@@ -71,7 +75,10 @@ public class Issue {
                 issueForm.getIssueDescription(),
                 issueForm.getPriority(),
                 issueForm.getStatus(),
-                project
+                project,
+                reporter,
+                fixer,
+                assignee
         );
     }
 }

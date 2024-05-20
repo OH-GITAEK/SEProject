@@ -4,75 +4,59 @@ import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member") // 기본 URL 경로를 /api/member로 설정
 public class MemberApiController {
     private final MemberService memberService;
 
-    @GetMapping("/save")
-    public ResponseEntity<String> saveForm(){
-        // 회원가입 페이지 대신 회원가입을 위한 안내 메시지 반환
-        return ResponseEntity.ok("회원 가입 페이지 대신 사용할 안내 메시지");
-    }
-
-    @PostMapping("/save")
-    public ResponseEntity<MemberDTO> save(@ModelAttribute MemberDTO memberDTO){
+    @PostMapping("/api/member/save")
+    public MemberDTO save(@RequestBody MemberDTO memberDTO) {
         memberService.save(memberDTO);
-        // 회원 정보 저장 후 저장된 회원 정보 반환
-        return ResponseEntity.ok(memberDTO);
+        return memberDTO;
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<String> loginForm(){
-        // 로그인 페이지 대신 로그인을 위한 안내 메시지 반환
-        return ResponseEntity.ok("로그인 페이지 대신 사용할 안내 메시지");
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
+    @PostMapping("/api/member/login")
+    public MemberDTO login(@RequestBody MemberDTO memberDTO, HttpSession session) {
         MemberDTO loginResult = memberService.login(memberDTO);
-        if(loginResult != null){
-            session.setAttribute("loginEmail", loginResult.getMemberEmail());
-            return ResponseEntity.ok("메인 페이지로 리다이렉트 대신 성공 메시지");
-        } else {
-            return ResponseEntity.badRequest().body("로그인 실패 메시지");
+        if (loginResult != null) {
+            session.setAttribute("memberName", loginResult.getMemberName());
         }
+        return loginResult;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<MemberDTO>> findAll(){
-        List<MemberDTO> memberDTOList = memberService.findAll();
-        return ResponseEntity.ok(memberDTOList);
+    @GetMapping("/api/member/")
+    public List<MemberDTO> findAll() {
+        return memberService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberDTO> findById(@PathVariable Long id){
-        MemberDTO memberDTO = memberService.findById(id);
-        return ResponseEntity.ok(memberDTO);
+    @GetMapping("/api/member/{id}")
+    public MemberDTO findById(@PathVariable Long id){
+        return memberService.findById(id);
     }
 
-    @GetMapping("/update")
-    public ResponseEntity<MemberDTO> updateForm(HttpSession session){
-        String myEmail = (String)session.getAttribute("loginEmail");
-        MemberDTO memberDTO = memberService.updateForm(myEmail);
-        return ResponseEntity.ok(memberDTO);
+    @PutMapping("/api/member/update")
+    public MemberDTO updateForm(@RequestBody MemberDTO memberDTO, HttpSession session) {
+        String myMemberName = (String)session.getAttribute("memberName");
+
+        // 이 부분의 구현에 따라서 DTO를 수정한 후 저장하는 로직이 필요할 수 있습니다.
+        // 예) memberDTO.setMemberName(myMemberName);
+        // memberService.update(memberDTO);
+
+        return memberDTO; // 수정된 정보를 반환합니다.
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    @DeleteMapping("/api/member/delete/{id}")
+    public Long deleteById(@PathVariable Long id) {
         memberService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return id;
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session){
+    @PostMapping("/api/member/logout")
+    public void logout(HttpSession session) {
         session.invalidate();
-        return ResponseEntity.ok().build();
     }
 }

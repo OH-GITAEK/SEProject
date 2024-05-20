@@ -1,5 +1,6 @@
 package com.example.seproject.comment;
 
+import com.example.seproject.member.entity.MemberEntity;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
@@ -20,13 +21,15 @@ public class CommentForm {
     private String content;
 
     private LocalDateTime reportedDate;
+    private String memberEntity;
 
     public static CommentForm createCommentForm(Comment comment){
         return new CommentForm(
                 comment.getId(),
                 comment.getIssue().getId(),
                 comment.getContent(),
-                comment.getReportedDate()
+                comment.getReportedDate(),
+                comment.getMemberEntity().getMemberName()
         );
     }
 }

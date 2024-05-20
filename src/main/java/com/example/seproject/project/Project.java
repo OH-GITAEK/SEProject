@@ -1,9 +1,10 @@
 package com.example.seproject.project;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.seproject.issue.Issue;
+import com.example.seproject.member.entity.MemberEntity;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -25,23 +26,30 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String projectDescription;
 
-//    private User admin;
+    @ManyToOne
+    private MemberEntity admin;
 
     private LocalDateTime reportedDate;
 
-//    private User PLUser;
+    @ManyToMany
+    private List<MemberEntity> plUser;
 
-//    private User devUser;
+    @ManyToMany
+    private List<MemberEntity> devUser;
 
-//    private User testUser;
+    @ManyToMany
+    private List<MemberEntity> testUser;
 
 //    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
 //    private List<Issue> issueList;
 
-    public Project(Long id, String projectTitle, String projectDescription){
-        this.id = id;
+    public Project(String projectTitle, String projectDescription, MemberEntity admin,List<MemberEntity> pLUser,List<MemberEntity> devUser ,  List<MemberEntity> testUser){
         this.projectTitle = projectTitle;
         this.projectDescription = projectDescription;
         this.reportedDate = LocalDateTime.now();
+        this.admin = admin;
+        this.plUser = pLUser;
+        this.devUser = devUser;
+        this.testUser = testUser;
     }
 }

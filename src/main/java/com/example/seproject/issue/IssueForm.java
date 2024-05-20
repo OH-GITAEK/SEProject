@@ -1,5 +1,6 @@
 package com.example.seproject.issue;
 
+import com.example.seproject.member.entity.MemberEntity;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
@@ -23,6 +24,10 @@ public class IssueForm {
     @NotEmpty(message="내용은 필수항목입니다.")
     private String issueDescription;
 
+    private String reporter;
+    private String fixer;
+    private String assignee;
+
     private LocalDateTime reportedDate = LocalDateTime.now();
 
     @Size(max=200)
@@ -32,11 +37,28 @@ public class IssueForm {
     private String status;
 
     public static IssueForm createIssueForm(Issue issue){
+        String fixer;
+        String assignee;
+        if(issue.getFixer() == null){
+            fixer = "";
+        }
+        else{
+            fixer = issue.getFixer().getMemberName();
+        }
+        if(issue.getAssignee() == null){
+            assignee = "";
+        }
+        else{
+            assignee = issue.getAssignee().getMemberName();
+        }
         return new IssueForm(
                 issue.getId(),
                 issue.getProject().getId(),
                 issue.getIssueTitle(),
                 issue.getIssueDescription(),
+                issue.getReporter().getMemberName(),
+                fixer,
+                assignee,
                 issue.getReportedDate(),
                 issue.getPriority(),
                 issue.getStatus()
