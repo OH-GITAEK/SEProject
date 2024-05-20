@@ -1,9 +1,12 @@
 package com.example.seproject.member.entity;
 
 import com.example.seproject.member.dto.MemberDTO;
+import com.example.seproject.project.Project;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,4 +43,18 @@ public class MemberEntity { // table 역할
         memberEntity.setMemberName(memberDTO.getMemberName());
         return memberEntity;
     }
+//    @OneToMany(mappedBy = "admin")
+//    private List<Project> managedProjects;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "project_pluser_id")
+//    private Project projectPlUser;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "project_devuser_id")
+//    private Project projectDevUser;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "project_TestUser_id")
+//    private Project projectTestUser;
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -75,7 +76,8 @@ public class MemberService {
             return null;
         }
     }
-    public MemberDTO updateForm(String myEmail) {
+    public MemberDTO updateForm(String memberName) { // myEmail 대신 myMemberName으로
+        /*
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(myEmail);
         if(optionalMemberEntity.isPresent()){
             return MemberDTO.toMemberDTO(optionalMemberEntity.get());
@@ -83,6 +85,17 @@ public class MemberService {
         else{
             return null;
         }
+
+        */
+
+        Optional<MemberEntity> optionalMemberEntity=memberRepository.findByMemberName(memberName);
+        if(optionalMemberEntity.isPresent()){
+            return MemberDTO.toMemberDTO(optionalMemberEntity.get());
+        }
+        else{
+            return null;
+        }
+
     }
 
     public void update(MemberDTO memberDTO) {
@@ -92,4 +105,10 @@ public class MemberService {
     public void deleteById(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public MemberEntity findByMemberName(String myMemberName) {
+        return memberRepository.findByMemberName(myMemberName)
+                .orElseThrow(() -> new NoSuchElementException("Member not found: " + myMemberName));
+    }
+    //public MemberEntity findByMemberName(String name){return memberRepository.findByMemberName(name).get();}
 }
