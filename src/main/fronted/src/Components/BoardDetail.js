@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './BoardDetail.css';
 function BoardDetail() {
 
@@ -10,7 +10,7 @@ function BoardDetail() {
                     게시글 내용
                 </p>
                 <div className="buttons">
-                    <button className="button">추가</button>
+                    <button className="button">수정</button>
                     <button className="button">삭제</button>
                     <button className="button">해결</button>
                 </div>

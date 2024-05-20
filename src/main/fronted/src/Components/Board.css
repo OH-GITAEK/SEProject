@@ -1,0 +1,118 @@
+.popup-container {
+    left: 50%;
+    margin: 0 auto;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.popup input,
+.popup textarea {
+    width: 1020px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.popup button {
+    padding: 8px 20px;
+    margin: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+/* Root container styles */
+.root {
+    max-width: 800px; /* Adjust according to your layout */
+    margin: 0 auto;
+    position: absolute; /* 고정 위치 */
+    left: 30%;
+}
+
+/* Table styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table head styles */
+.head {
+    background-color: #f0f0f0;
+}
+
+/* Table row styles */
+.row {
+    border-bottom: 1px solid #ddd;
+    cursor: pointer; /* 클릭 가능 표시 */
+}
+
+/* Table cell styles */
+.cell {
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/* Last cell in each row */
+.cell:last-child {
+    border-right: none;
+}
+
+/* Alternate row background color */
+.row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.menu a {
+    display: block;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+    margin: 20px 0;
+    position: relative;
+    top: 100px;
+    border: 1px solid;
+    border-radius: 10px; /* 모서리를 둥글게 */
+}
+#signup {
+    position: relative;
+    top: 10px;
+    text-decoration: none;
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    line-height: 1.5;
+    color: #666;
+}
