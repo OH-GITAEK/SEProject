@@ -26,30 +26,29 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String projectDescription;
 
-    @OneToOne
+    @ManyToOne
     private MemberEntity admin;
 
     private LocalDateTime reportedDate;
 
-    @OneToMany
-    private List<MemberEntity> PLUser;
+    @ManyToMany
+    private List<MemberEntity> plUser;
 
-    @OneToMany
+    @ManyToMany
     private List<MemberEntity> devUser;
 
-    @OneToMany
+    @ManyToMany
     private List<MemberEntity> testUser;
 
 //    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
 //    private List<Issue> issueList;
 
-    public Project(Long id, String projectTitle, String projectDescription, MemberEntity admin, List<MemberEntity> PLUser, List<MemberEntity> devUser, List<MemberEntity> testUser){
-        this.id = id;
+    public Project(String projectTitle, String projectDescription, MemberEntity admin,List<MemberEntity> pLUser,List<MemberEntity> devUser ,  List<MemberEntity> testUser){
         this.projectTitle = projectTitle;
         this.projectDescription = projectDescription;
         this.reportedDate = LocalDateTime.now();
         this.admin = admin;
-        this.PLUser = PLUser;
+        this.plUser = pLUser;
         this.devUser = devUser;
         this.testUser = testUser;
     }
