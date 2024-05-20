@@ -1,6 +1,7 @@
 package com.example.seproject.comment;
 
 import com.example.seproject.project.ProjectService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,11 @@ public class CommentController {
     }
 
     @PostMapping("/api/projects/{projectId}/issues/{issueId}/comments/create")
-    public CommentForm create(@Valid @RequestBody CommentForm commentForm, BindingResult bindingResult, @PathVariable("issueId") Long issueId){
+    public CommentForm create(@Valid @RequestBody CommentForm commentForm, BindingResult bindingResult, @PathVariable("issueId") Long issueId, HttpSession session){
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Validation failed");
         }
-        return commentService.create(issueId,commentForm);
+        String myMemberName = (String)session.getAttribute("memberName");
+        return commentService.create(issueId,commentForm,myMemberName);
     }
 }

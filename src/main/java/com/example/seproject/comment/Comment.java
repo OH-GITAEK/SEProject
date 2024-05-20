@@ -3,6 +3,7 @@ package com.example.seproject.comment;
 import java.time.LocalDateTime;
 
 import com.example.seproject.issue.Issue;
+import com.example.seproject.member.entity.MemberEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,28 +29,29 @@ public class Comment {
 
     private LocalDateTime reportedDate;
 
-    //    private User fixer;
+    @ManyToOne
+    private MemberEntity memberEntity;
 
     @ManyToOne
     private Issue issue;
 
-    public Comment(Long id, String content, Issue issue) {
+    public Comment(Long id, String content, Issue issue, MemberEntity memberEntity) {
         this.id = id;
         this.content = content;
         this.reportedDate = LocalDateTime.now();
         this.issue = issue;
+        this.memberEntity = memberEntity;
     }
 
-    public static Comment createComment(CommentForm commentForm, Issue issue) {
+    public static Comment createComment(CommentForm commentForm, Issue issue, MemberEntity memberEntity) {
         if (commentForm.getId() != null)
             throw new IllegalArgumentException("코멘트 생성 실패! 이슈의 id가 없어야 합니다.");
-        if (commentForm.getIssueId() != issue.getId())
-            throw new IllegalArgumentException("코멘트 생성 실패! 이슈의 id가 잘못됐습니다.");
 
         return new Comment(
                 commentForm.getId(),
                 commentForm.getContent(),
-                issue
+                issue,
+                memberEntity
         );
     }
 }
