@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import axios from "axios";
 
 export const UserContext = createContext();
 
@@ -10,7 +11,18 @@ export const UserProvider = ({ children }) => {
                                                                            { email: 'tester1', password: 'tester1', role: 'tester' }]);
     // 가입한 계정 저장
     const addUser = (user) => {
-        setUsers([...users, user]);
+        axios.post('/api/member/save', {
+            memberEmail: user.email,
+            memberPassword: user.password,
+            memberName: user.role
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        // setUsers([...users, user]);
     };
 
     return (
