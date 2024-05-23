@@ -17,17 +17,23 @@ export default function Login() {
     event.preventDefault();
     axios.post('/api/member/login', {
         memberEmail: event.target.memberEmail.value,
-        memberPassword: event.target.memberEmail.value,
+        memberPassword: event.target.memberPassword.value,
     })
         .then((response) => {
-            console.log(response);
-            setUserData(response.data);
-            setIsLoggedIn(true);
-            navigate(`/Project`);
+            if(response.data.memberEmail === event.target.memberEmail.value && response.data.memberPassword === event.target.memberPassword.value){
+                setUserData(response.data);
+                setIsLoggedIn(true);
+                navigate(`/Project`);
+            }
+            else {
+                alert('이메일 혹은 비밀번호가 틀렸습니다.');
+                navigate(`/`);
+            }
         })
         .catch(function (error) {
             console.log(error);
-            alert('이메일 혹은 비밀번호가 틀렸습니다.');
+            alert('인터넷 연결상태를 확인하세요.');
+            navigate(`/`);
         });
   };
 
@@ -35,6 +41,7 @@ export default function Login() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserData({ id: 0, memberEmail: "", memberPassword: "", memberName: ""});
+      navigate(`/`);
   };
 
   const handleSignUp = (event) => {
