@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
+import {Autocomplete, Chip} from "@mui/material";
 
 export default function ProjectCreate(){
     const [projectTitle, setProjectTitle] = useState('');
@@ -16,16 +17,12 @@ export default function ProjectCreate(){
     const navigate = useNavigate();
 
     const handleCreate = () => {
-        const newProject = {
-            projectTitle,
-            projectDescription,
-            plUser: plUser.split(',').map(user => user.trim()),
-            devUser: devUser.split(',').map(user => user.trim()),
-            testUser: testUser.split(',').map(user => user.trim())
-        };
-        console.log('Project 생성됨!', newProject);
         axios.post('/api/projects/create', {
-            newProject
+            projectTitle: projectTitle,
+            projectDescription: projectDescription,
+            plUser: plUser,
+            devUser: devUser,
+            testUser: testUser
         })
             .then((response) => {
                 console.log(response);
@@ -35,7 +32,7 @@ export default function ProjectCreate(){
                 console.log(error);
                 alert('프로젝트를 다시 생성해주세요.');
             });
-        navigate('/');
+        navigate('/Project');
     };
 
     return (
@@ -78,59 +75,107 @@ export default function ProjectCreate(){
                         },
                     }}
                 />
-                <TextField
-                    label="PL User (콤마로 구분)"
-                    value={plUser}
-                    onChange={(e) => setPlUser(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
+                <Autocomplete
+                multiple
+                id="tags-filled"
+                options={[]}
+                fullWidth
+                required
+                value={plUser}
+                onChange={(event, newValue) => {
+                    setPlUser(newValue);
+                }}
+                freeSolo
+                renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                        <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                    ))
+                }
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        color="success"
+                        variant="outlined"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                },
+                            },
+                        }}
+                        label="PL"
+                        required
+                        margin="normal"
+                    />
+                )}
+            />
+                <Autocomplete
+                    multiple
+                    id="tags-filled"
+                    options={[]}
                     fullWidth
                     required
-                    color="success"
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#03C75A', // 포커스 시 테두리 색상
-                            },
-                        },
-                    }}
-                />
-                <TextField
-                    label="Dev User (콤마로 구분)"
                     value={devUser}
-                    onChange={(e) => setDevUser(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    required
-                    color="success"
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#03C75A', // 포커스 시 테두리 색상
-                            },
-                        },
+                    onChange={(event, newValue) => {
+                        setDevUser(newValue);
                     }}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                },
+                            }}
+                            label="Dev"
+                            required
+                            margin="normal"
+                        />
+                    )}
                 />
-                <TextField
-                    label="Test User (콤마로 구분)"
-                    value={testUser}
-                    onChange={(e) => setTestUser(e.target.value)}
-                    variant="outlined"
-                    margin="normal"
+                <Autocomplete
+                    multiple
+                    id="tags-filled"
+                    options={[]}
                     fullWidth
                     required
-                    color="success"
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#03C75A', // 포커스 시 테두리 색상
-                            },
-                        },
-                        '& .MuiInputLabel-root.Mui-focused': {
-                            color: '#03C75A', // 포커스 시 레이블 색상
-                        },
+                    value={testUser}
+                    onChange={(event, newValue) => {
+                        setTestUser(newValue);
                     }}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                },
+                            }}
+                            label="Tester"
+                            required
+                            margin="normal"
+                        />
+                    )}
                 />
                 <Button variant="contained" color="primary" onClick={handleCreate} sx={{ mt: 3,
                     backgroundColor: '#03C75A', // 네이버 초록색

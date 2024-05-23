@@ -21,7 +21,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import ErrorIcon from '@mui/icons-material/Error';
-import PersonIcon from '@mui/icons-material/Person';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import React from "react";
@@ -35,9 +36,10 @@ import ProjectDetail from "./Components/ProjectDetail";
 const drawerWidth = 350;
 
 const menuItems = {
-    '홈': <HomeIcon />,
-    '이슈': <ErrorIcon />,
-    '계정': <PersonIcon />,
+    '홈': ['/', <HomeIcon />],
+    '프로젝트': ['/Project', <ErrorIcon />],
+    '이슈' : ['/할당된 이슈로 찾아가게 해야함', <NotificationsIcon/>],
+    '계정': ['/', <AccountCircleIcon />],
 };
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -175,7 +177,7 @@ export default function App() {
                             <ListItem key={text} disablePadding>
                                 <ListItemButton>
                                     <ListItemIcon>
-                                        {icon}
+                                        {icon[1]}
                                     </ListItemIcon>
                                     <ListItemText primary={text} />
                                 </ListItemButton>
@@ -198,8 +200,8 @@ export default function App() {
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
-                                <Route path="/Project/Issue" element={<Issue />} />
-                                <Route path="/Project/Issue/board" element={<BoardDetail />} />
+                                <Route path="/Project/:projectTitle/Issue" element={<Issue />} />
+                                <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
                                 <Route path="/Testpage/Test" element={<Test />} />
                             </Routes>
                         </UserProvider>
