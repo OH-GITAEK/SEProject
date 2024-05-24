@@ -1,35 +1,47 @@
 import React, { useState, useContext } from 'react';
-import {UserContext, UserProvider} from "./UserContext";
+import Signup from "./Signup";
+import {Box, Button, IconButton, InputAdornment, TextField} from "@mui/material";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import { UserContext } from './Usercontext'
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import "./Login.css";
-import Signup from "../page/Signup";
-import {Button} from "@mui/material";
 
-function Login() {
+export default function Login() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
-  const [userData, setUserData] = useState({ email: '', role: ''});
+    const { userData, setUserData } = useContext(UserContext);
   const [isSignUp, setIsSignUp] = useState(false); // 로그인 상태
-  const { users } = useContext(UserContext);// 저장된 계정 가져옴
-  const navigate = useNavigate(); // 페이지이동
-
+  const [showPassword, setShowPassword] = useState(false); // 비번 표시
+    const navigate = useNavigate();
+    // 로그인 로직
   const handleLogin = (event) => {
     event.preventDefault();
-    // 로그인 판단
-    const user = users.find((user) => user.email === event.target.memberEmail.value && user.password === event.target.memberPassword.value);
-    if (user) {
-      setIsLoggedIn(true);
-      // 사용자 이메일 설정
-      setUserData({ email: user.email, role: user.role});
-    } else {
-      alert('이메일 혹은 비밀번호가 틀렸습니다.');
-      window.location.reload();
-    }
-
+    axios.post('/api/member/login', {
+        memberEmail: event.target.memberEmail.value,
+        memberPassword: event.target.memberPassword.value,
+    })
+        .then((response) => {
+            if(response.data.memberEmail === event.target.memberEmail.value && response.data.memberPassword === event.target.memberPassword.value){
+                setUserData(response.data);
+                setIsLoggedIn(true);
+                navigate(`/Project`);
+            }
+            else {
+                alert('이메일 혹은 비밀번호가 틀렸습니다.');
+                navigate(`/`);
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert('인터넷 연결상태를 확인하세요.');
+            navigate(`/`);
+        });
   };
 
+  // 로그아웃
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserData({ email: '', role: ''});
+    setUserData({ id: 0, memberEmail: "", memberPassword: "", memberName: ""});
+      navigate(`/`);
   };
 
   const handleSignUp = (event) => {
@@ -37,38 +49,100 @@ function Login() {
     setIsSignUp(true);
   }
 
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
   if (isLoggedIn) {
     return (
-      <div className='login'>
-        <h1>환영합니다, {userData.email}!</h1>
-        <h2>역할: {userData.role}</h2>
-        <button onClick={handleLogout} id='signout'>로그아웃</button>
-      </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, padding: '40px'}}>
+            <form id='loginform' onSubmit={handleLogin} method="post">
+        <h1>환영합니다! <br/> {userData.memberName}</h1>
+          <Button onClick={handleLogout} variant="contained" sx={{
+              backgroundColor: '#03C75A', // 네이버 초록색
+              '&:hover': {
+                  backgroundColor: '#03C75A', // 네이버 초록색 호버
+              },
+          }}>
+              로그아웃
+          </Button>
+            </form>
+      </Box>
     );
   }
 
   if(isSignUp){
-    return (
-        <div className='login'>
-          <UserProvider>
-            <Signup/>
-          </UserProvider>
-        </div>
-    );
+    return (<Signup/>);
   }
 
   return (
-        <div className="login">
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, padding: '40px'}}>
           <form id='loginform' onSubmit={handleLogin} method="post">
-            아이디: <input type="text" name="memberEmail" required /><br/>
-            비밀번호: <input type="password" name="memberPassword"/><br/>
-            <input type="submit" value="로그인"/>
+              <TextField
+                  label="이메일"
+                  name="memberEmail"
+                  fullWidth
+                  margin="none"
+                  color="success"
+                  sx={{
+                      '& .MuiOutlinedInput-root': {
+                          '&.Mui-focused fieldset': {
+                              borderColor: '#03C75A', // 포커스 시 테두리 색상
+                          },
+                          '& .MuiInputLabel-root': {
+                              color: '#03C75A', // 기본 레이블 색상
+                          },
+                      },
+                  }}
+              />
+              <TextField
+                  label="비밀번호"
+                  name="memberPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  fullWidth
+                  margin = 'normal'
+                  color="success"
+                  sx={{
+                      '& .MuiOutlinedInput-root': {
+                          '&.Mui-focused fieldset': {
+                              borderColor: '#03C75A', // 포커스 시 테두리 색상
+                          },
+                          '& .MuiInputLabel-root': {
+                              color: '#03C75A', // 기본 레이블 색상
+                          },
+                      },
+                  }}
+                  InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="end">
+                              <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                              >
+                                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                          </InputAdornment>
+                      ),
+                  }}
+              />
+              <Button type="submit" variant="contained" fullWidth margin="normal" sx={{
+                  backgroundColor: '#03C75A', // 네이버 초록색
+                  '&:hover': {
+                      backgroundColor: '#03C75A', // 네이버 초록색 호버
+                  },
+              }}>
+                  로그인
+              </Button>
           </form>
           <Button onClick={handleSignUp} color="primary">
             회원가입
           </Button>
-        </div>
+        </Box>
   );
 }
-
-export default Login;
