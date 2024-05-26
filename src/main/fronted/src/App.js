@@ -20,7 +20,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
-import ErrorIcon from '@mui/icons-material/Error';
+import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -37,7 +37,7 @@ const drawerWidth = 350;
 
 const menuItems = {
     '홈': ['/', <HomeIcon />],
-    '프로젝트': ['/Project', <ErrorIcon />],
+    '프로젝트': ['/Project', <DesktopWindowsIcon />],
     '이슈' : ['/할당된 이슈로 찾아가게 해야함', <NotificationsIcon/>],
     '계정': ['/', <AccountCircleIcon />],
 };
@@ -200,8 +200,8 @@ export default function App() {
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
-                                <Route path="/Project/:projectTitle/Issue" element={<Issue />} />
-                                <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
+                                <Route path="/Project/Issue" element={<Issue />} />
+                                <Route path="/Project/Issue/BoardDetail" element={<BoardDetail />} />
                                 <Route path="/Testpage/Test" element={<Test />} />
                             </Routes>
                         </UserProvider>
