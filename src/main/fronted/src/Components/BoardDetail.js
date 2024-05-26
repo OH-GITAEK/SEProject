@@ -103,8 +103,8 @@ const BoardDetail = () => {
         setPage(0);
     };
 
-    const handleCreateIssue = () => {
-        navigate(`/Project/${Project.projectTitle}/issues/${Issue.issueId}/CommentCreate`);
+    const handleCreateComment = () => {
+        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}/CommentCreate`);
     };
 
     const handleSearchChange = (event) => {
@@ -117,9 +117,7 @@ const BoardDetail = () => {
         row.memberEntity.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleRowClick = (Project, Issue) => {
-        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: {Project, Issue } });
-    };
+
 
     const handleDeleteProject = () => {
         // axios.delete(`/api/projects/${Project.projectId}`)
@@ -203,7 +201,7 @@ const BoardDetail = () => {
                     '&:hover': {
                         backgroundColor: '#03C75A',
                     },
-                }} onClick={handleCreateIssue}>
+                }} onClick={handleCreateComment}>
                     코멘트 생성
                 </Button>
             </Box>
@@ -228,7 +226,7 @@ const BoardDetail = () => {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
-                                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id} onClick={() => handleRowClick(row)}>
+                                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
