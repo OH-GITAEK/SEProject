@@ -34,6 +34,7 @@ import ProjectCreate from "./Components/ProjectCreate";
 import ProjectDetail from "./Components/ProjectDetail";
 import {ProjectProvider} from "./Components/Projectcontext";
 import IssueCreate from "./Components/IssueCreate";
+import {IssueProvider} from "./Components/Issuecontext";
 const drawerWidth = 350;
 
 const menuItems = {
@@ -196,6 +197,7 @@ export default function App() {
                         flexGrow: 1,
                         padding: theme.spacing(5),
                     }}>
+                        <IssueProvider>
                         <ProjectProvider>
                         <UserProvider>
                             <Routes>
@@ -209,6 +211,7 @@ export default function App() {
                             </Routes>
                         </UserProvider>
                         </ProjectProvider>
+                        </IssueProvider>
                     </Box>
                 </Main>
             </Box>
