@@ -35,6 +35,8 @@ import ProjectDetail from "./Components/ProjectDetail";
 import {ProjectProvider} from "./Components/Projectcontext";
 import IssueCreate from "./Components/IssueCreate";
 import {IssueProvider} from "./Components/Issuecontext";
+import CommentCreate from "./Components/CommentCreate";
+
 const drawerWidth = 350;
 
 const menuItems = {
@@ -206,7 +208,7 @@ export default function App() {
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
                                 <Route path="/Project/:projectTitle/:issueTitle" element={<BoardDetail/>} />
-                                <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
+                                <Route path="/Project/:projectTitle/:issueTitle/CommentCreate" element={<CommentCreate/>} />
                                 <Route path="/Testpage/Test" element={<Test />} />
                             </Routes>
                         </UserProvider>
