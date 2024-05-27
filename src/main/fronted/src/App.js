@@ -34,6 +34,9 @@ import ProjectCreate from "./Components/ProjectCreate";
 import ProjectDetail from "./Components/ProjectDetail";
 import {ProjectProvider} from "./Components/Projectcontext";
 import IssueCreate from "./Components/IssueCreate";
+import {IssueProvider} from "./Components/Issuecontext";
+import CommentCreate from "./Components/CommentCreate";
+
 const drawerWidth = 350;
 
 const menuItems = {
@@ -196,6 +199,7 @@ export default function App() {
                         flexGrow: 1,
                         padding: theme.spacing(5),
                     }}>
+                        <IssueProvider>
                         <ProjectProvider>
                         <UserProvider>
                             <Routes>
@@ -208,12 +212,17 @@ export default function App() {
 =======
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
                                 <Route path="/Project/:projectTitle/:issueTitle" element={<BoardDetail/>} />
+<<<<<<< HEAD
                                 <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
 >>>>>>> e0425af240de77c6b917d2e0b6d0746e639be0bf
+=======
+                                <Route path="/Project/:projectTitle/:issueTitle/CommentCreate" element={<CommentCreate/>} />
+>>>>>>> 0ba7c223d61117f42b8f409200ec052d8f9fbba8
                                 <Route path="/Testpage/Test" element={<Test />} />
                             </Routes>
                         </UserProvider>
                         </ProjectProvider>
+                        </IssueProvider>
                     </Box>
                 </Main>
             </Box>
