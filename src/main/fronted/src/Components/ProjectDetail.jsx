@@ -124,7 +124,7 @@ const ProjectDetail = () => {
     );
 
     const handleRowClick = (Issue) => {
-        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: { Issue } });
+        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: { Project, Issue } });
     };
 
     const handleDeleteProject = () => {
