@@ -32,7 +32,8 @@ import Test from "./Testpage/Test";
 import {UserProvider} from "./Components/Usercontext";
 import ProjectCreate from "./Components/ProjectCreate";
 import ProjectDetail from "./Components/ProjectDetail";
-
+import {ProjectProvider} from "./Components/Projectcontext";
+import IssueCreate from "./Components/IssueCreate";
 const drawerWidth = 350;
 
 const menuItems = {
@@ -195,16 +196,24 @@ export default function App() {
                         flexGrow: 1,
                         padding: theme.spacing(5),
                     }}>
+                        <ProjectProvider>
                         <UserProvider>
                             <Routes>
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
+<<<<<<< HEAD
                                 <Route path="/Project/Issue" element={<Issue />} />
                                 <Route path="/Project/Issue/BoardDetail" element={<BoardDetail />} />
+=======
+                                <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
+                                <Route path="/Project/:projectTitle/:issueTitle" element={<BoardDetail/>} />
+                                <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
+>>>>>>> e0425af240de77c6b917d2e0b6d0746e639be0bf
                                 <Route path="/Testpage/Test" element={<Test />} />
                             </Routes>
                         </UserProvider>
+                        </ProjectProvider>
                     </Box>
                 </Main>
             </Box>
