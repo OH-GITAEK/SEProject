@@ -57,10 +57,8 @@ public class Issue {
         this.issueTitle = issueTitle;
         this.issueDescription = issueDescription;
         this.reportedDate = LocalDateTime.now();
-        if(priority.isEmpty()) this.priority = "major";
-        else this.priority = priority;
-        if(status.isEmpty()) this.status = "new";
-        else this.status = status;
+        this.priority = (priority != null) ? priority : "major";
+        this.status = (status != null) ? status : "new";
         this.project = project;
         this.reporter = reporter;
         this.fixer = fixer;

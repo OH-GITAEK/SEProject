@@ -61,7 +61,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const ProjectDetail = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { Project } = location.state || {};
+    const { Project } = location.state;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
@@ -89,7 +89,7 @@ const ProjectDetail = () => {
 
     useEffect(() => {
         if (Project) {
-            axios.get(`/api/projects/${Project.projectId}/issues`)
+            axios.get(`/api/projects/${Project.id}/issues`)
                 .then((response) => {
                     setRows((prevRows) => [...prevRows, ...response.data]);
                 })
@@ -109,7 +109,7 @@ const ProjectDetail = () => {
     };
 
     const handleCreateIssue = () => {
-        navigate(`/Project/${Project.projectTitle}/IssueCreate`);
+        navigate(`/Project/${Project.projectTitle}/IssueCreate`, { state: {Project}});
     };
 
     const handleSearchChange = (event) => {
@@ -124,7 +124,7 @@ const ProjectDetail = () => {
     );
 
     const handleRowClick = (Issue) => {
-        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: { Issue } });
+        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: { Issue, Project}});
     };
 
     const handleDeleteProject = () => {

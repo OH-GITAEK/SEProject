@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import './Writing.css';
 import axios from "axios"; // 팝업창에 대한 CSS 파일을 import
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -15,9 +15,10 @@ const IssueCreate = () => {
     const [issueDescription, setIssueDescription] = useState('');
     const { projectData, setProjectData } = useContext(ProjectContext);
     const navigate = useNavigate();
-
+    const location = useLocation();
+    const { Project } = location.state;
     const handleCreate = () => {
-        axios.post(`/api/projects/${projectData.projectTitle}/issues/create`, {
+        axios.post(`/api/projects/${Project.id}/issues/create`, {
             issueTitle: issueTitle,
             issueDescription: issueDescription
         })
@@ -26,9 +27,24 @@ const IssueCreate = () => {
                 alert('이슈 생성이 완료되었습니다.');
             })
             .catch(function (error) {
-                console.log(error);
+                console.error('Error:', error);
+                if (error.response) {
+                    // 서버가 응답했지만 상태 코드가 2xx 범위에 있지 않음
+                    console.error('Server responded with status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                } else if (error.request) {
+                    // 요청이 만들어졌으나 응답을 받지 못함
+                    console.error('No response received:', error.request);
+                } else {
+                    // 요청을 설정하는 중에 문제가 발생함
+                    console.error('Error setting up request:', error.message);
+                }
                 alert('이슈를 다시 생성해주세요.');
             });
+            // .catch(function (error) {
+            //     console.log(error);
+            //     alert('이슈를 다시 생성해주세요.');
+            // });
         navigate(`/Project/${projectData.projectTitle}`);
     };
 
@@ -99,3 +115,4 @@ const IssueCreate = () => {
 };
 
 export default IssueCreate;
+

@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name="member_table") //database에 해당 이름의 테이블 생성
+//database에 해당 이름의 테이블 생성
 public class MemberEntity { // table 역할
     // jpa==> database를 객체처럼 사용 가능
 
