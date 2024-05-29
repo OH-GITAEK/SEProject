@@ -21,7 +21,6 @@ const IssueCreate = () => {
             issueDescription: issueDescription
         })
             .then((response) => {
-                console.log(response);
                 return axios.post(`/api/projects/${currentProject.id}/issues/${response.data.id}/update-dev`, {
                     assignee: issueAssignee
                 });

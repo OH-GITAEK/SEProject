@@ -118,6 +118,7 @@ const ProjectDetail = () => {
     );
 
     const handleRowClick = (issue) => {
+        window.sessionStorage.setItem("currentIssueId", issue.id);
         setCurrentIssueId(issue.id);
         navigate(`/Project/${currentProject.projectTitle}/${issue.issueTitle}`, { state: { currentProject, issue } });
     };

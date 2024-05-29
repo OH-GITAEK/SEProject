@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -96,7 +96,7 @@ export default function Project() {
             .catch((error) => {
                 console.error('Error fetching data:', error);
             });
-    }, [rows]);
+    }, []);
 
     /* 테이블에 페이지 넘기기 */
     const handleChangePage = (event, newPage) => {
@@ -122,7 +122,7 @@ export default function Project() {
         row.projectTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         row.projectDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
         row.reportedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.admin.memberName.toLowerCase().includes(searchQuery.toLowerCase())
+        row.admin?.memberName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     /* 프로젝트를 누르면 프로젝트의 상세로 이동 */
@@ -180,7 +180,11 @@ export default function Project() {
                                             const value = row[column.id];
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
-                                                    {column.id === 'admin' ? value.memberName : value}
+                                                    {typeof value === 'object' && value !== null
+                                                        ? Array.isArray(value)
+                                                            ? value.map(v => v.memberName).join(', ')
+                                                            : value.memberName
+                                                        : value}
                                                 </TableCell>
                                             );
                                         })}

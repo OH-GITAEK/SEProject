@@ -32,6 +32,7 @@ export default function ProjectCreate(){
                 console.log(error);
                 alert('프로젝트를 다시 생성해주세요.');
             });
+        navigate(0);
         navigate('/Project');
     };
 

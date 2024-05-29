@@ -50,7 +50,7 @@ export default function Login() {
                 sessionStorage.removeItem('userData');
                 sessionStorage.removeItem('currentProjectId');
                 sessionStorage.removeItem('currentIssueId');
-                setUserData(null);
+                setUserData({});
                 navigate(``);
             })
             .catch(function (error) {

@@ -1,101 +1,59 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {Paper, Typography, Box, Button, Divider, IconButton, Tooltip, TextField} from '@mui/material';
+import { useLocation} from 'react-router-dom';
+import { Paper, Typography, Box, Button, Divider, IconButton, Tooltip, TextField } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { styled, alpha } from '@mui/material/styles';
+import { styled} from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { UserContext } from './Usercontext';
 
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    cursor: 'pointer',
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.15),
-    },
 }));
 
 const IssueDetail = () => {
     const location = useLocation();
-    const navigate = useNavigate();
-    const { Project, Issue } = location.state || {}; // 수정
+    const { Project, Issue } = location.state || {};
     const [currentProject, setCurrentProject] = useState(Project);
     const [currentIssue, setCurrentIssue] = useState(Issue);
-    const [page] = useState(0);
-    const rowsPerPage = useState(10);
-    const searchQuery = useState('');
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
     const columns = [
-        { id: 'content', label: 'Content', minWidth: 170 },
-        { id: 'reportedDate', label: 'Reported Date', minWidth: 170, align: 'right' },
-        { id: 'memberEntity', label: 'memberEntity', minWidth: 170, align: 'right' },
+        { id: 'memberEntity', label: 'Member Entity', minWidth: 170, align: 'left' },
+        { id: 'content', label: 'Content', minWidth: 170, align: 'center' },
     ];
-    const {currentProjectId, currentIssueId} = useContext(UserContext);
+    const { currentProjectId, currentIssueId } = useContext(UserContext);
 
-    const [rows, setRows] = useState([
-        {
-            id: 0,
-            issueId: 0,
-            content: "",
-            reportedDate: "",
-            memberEntity: ""
+    const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Issue || !Project) {
+            axios.get(`/api/projects/${currentProjectId}`)
+                .then((response) => {
+                    setCurrentProject(response.data);
+                    axios.get(`/api/projects/${currentProjectId}/issues/${currentIssueId}`)
+                        .then((response) => {
+                            setCurrentIssue(response.data);
+                            setLoading(false);
+                        })
+                        .catch((error) => {
+                            console.error('Error fetching issue data:', error);
+                            setLoading(false);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error fetching project data:', error);
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
         }
-    ]);
-
-    /*코멘트 표시 관련----------------------------------------------------------------------------------------------------*/
-
-    if (!Issue || !Project) {
-        axios.get(`/api/projects/${currentProjectId}`)
-            .then((response) => {
-                setCurrentProject(response.data);
-                axios.get(`/api/projects/${currentProjectId}/issues/${currentIssueId}`)
-                    .then((response) => {
-                        setCurrentIssue(response.data);
-                    })
-                    .catch((error) => {
-                        console.error('Error fetching data:', error);
-                        return (
-                            <Paper sx={{padding: 3, margin: 'auto', maxWidth: 800}}>
-                                <Typography variant="h5" gutterBottom>
-                                    연결 끊김
-                                </Typography>
-                                <Button variant="contained" onClick={() => navigate('/Project')} sx={{
-                                    mt: 2,
-                                    backgroundColor: '#03C75A', // 네이버 초록색
-                                    '&:hover': {
-                                        backgroundColor: '#03C75A', // 네이버 초록색 호버
-                                    },
-                                }}>
-                                    뒤로 가기
-                                </Button>
-                            </Paper>
-                        );
-                    });
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-                return (
-                    <Paper sx={{padding: 3, margin: 'auto', maxWidth: 800}}>
-                        <Typography variant="h5" gutterBottom>
-                            연결 끊김
-                        </Typography>
-                        <Button variant="contained" onClick={() => navigate('/Project')} sx={{
-                            mt: 2,
-                            backgroundColor: '#03C75A', // 네이버 초록색
-                            '&:hover': {
-                                backgroundColor: '#03C75A', // 네이버 초록색 호버
-                            },
-                        }}>
-                            뒤로 가기
-                        </Button>
-                    </Paper>
-                );
-            });
-    }
+    }, [currentProjectId, currentIssueId, Issue, Project]);
 
     useEffect(() => {
         if (currentIssue) {
@@ -104,40 +62,48 @@ const IssueDetail = () => {
                     setRows(response.data);
                 })
                 .catch((error) => {
-                    console.error('Error fetching data:', error);
+                    console.error('Error fetching comments:', error);
                 });
         }
-    }, [currentProject,currentIssue]);
+    }, [currentProject, currentIssue]);
 
-
-    const filteredRows = rows.filter(row =>
-        row.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.reportedDate.includes(searchQuery.toLowerCase()) ||
-        row.memberEntity.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    /*코멘트 생성 관련---------------------------------------------------------------------------------------------------*/
-    const [newComment, setNewComment] = useState(null);
-    const handleCommentSubmit = () => {
-        axios.post(`/api/projects/${Project.id}/issues/${Issue.id}/comments/create`, {
+    const [newComment, setNewComment] = useState('');
+    const handleCommentSubmit = (e) => {
+        e.preventDefault();
+        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/comments/create`, {
             content: newComment
         })
             .then((response) => {
-                console.log(response);
-                navigate(0); //새로고침
+                setRows(prevRows => [...prevRows, response.data]);
+                setNewComment('');
             })
-            .catch(function (error) {
+            .catch((error) => {
                 console.log(error);
                 alert('코멘트 등록 실패');
             });
     };
 
-    /*컴포넌트----------------------------------------------------------------------------------------------------------*/
+    const handleLoadMore = () => {
+        setPage(prevPage => prevPage + 1);
+    };
+
+    const displayedRows = rows.slice(0, (page + 1) * rowsPerPage);
+
+    if (loading) {
+        return (
+            <Paper sx={{ padding: 3, margin: 'auto', maxWidth: 800 }}>
+                <Typography variant="h5" gutterBottom>
+                    Loading...
+                </Typography>
+            </Paper>
+        );
+    }
+
     return (
         <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <Typography variant="h4" align="center" gutterBottom >
-                    {Issue.issueTitle}
+                <Typography variant="h4" align="center" gutterBottom>
+                    {currentIssue.issueTitle}
                 </Typography>
                 <Tooltip title="Delete">
                     <IconButton>
@@ -147,25 +113,25 @@ const IssueDetail = () => {
             </Box>
             <Box sx={{ marginBottom: 2 }}>
                 <Typography variant="body1" gutterBottom>
-                    {Issue.issueDescription}
+                    {currentIssue.issueDescription}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    reporter: {Issue.reporter}
+                    Reporter: {currentIssue.reporter}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    fixer: {Issue.fixer}
+                    Fixer: {currentIssue.fixer}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    assignee: {Issue.assignee}
+                    Assignee: {currentIssue.assignee}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    reportedDate: {Issue.reportedDate}
+                    Reported Date: {currentIssue.reportedDate}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    priority: {Issue.priority}
+                    Priority: {currentIssue.priority}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    status: {Issue.status}
+                    Status: {currentIssue.status}
                 </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />
@@ -185,39 +151,58 @@ const IssueDetail = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredRows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </StyledTableRow>
-                                );
-                            })}
+                        {displayedRows.map((row) => (
+                            <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                {columns.map((column) => {
+                                    const value = row[column.id];
+                                    return (
+                                        <TableCell key={column.id} align={column.align}>
+                                            {value}
+                                        </TableCell>
+                                    );
+                                })}
+                            </StyledTableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box>
-                <form onSubmit={handleCommentSubmit}>
-                    <TextField
-                        label="댓글을 입력하세요"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                    />
-                    <Button type="submit" variant="contained" color="primary">
-                        Comment
+            {displayedRows.length < rows.length && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                    <Button onClick={handleLoadMore} variant="contained" color="primary">
+                        더보기
                     </Button>
-                </form>
+                </Box>
+            )}
+            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
+                <TextField
+                    label="댓글을 입력하세요"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    color="success"
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderColor: '#03C75A', // 포커스 시 테두리 색상
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: '#03C75A', // 기본 레이블 색상
+                            },
+                        },
+                        marginRight: 2
+                    }}
+                />
+                <Button onClick={handleCommentSubmit} variant="contained" sx={{
+                    marginTop: 1,
+                    backgroundColor: '#03C75A', // 네이버 초록색
+                    '&:hover': {
+                        backgroundColor: '#03C75A', // 네이버 초록색 호버
+                    },
+                }}>
+                    입력
+                </Button>
             </Box>
         </Paper>
     );

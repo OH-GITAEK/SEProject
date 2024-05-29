@@ -29,6 +29,7 @@ import ProjectDetail from "./Components/ProjectDetail";
 import IssueCreate from "./Components/IssueCreate";
 import Login from "./Components/Login.js";
 import IssueDetail from "./Components/IssueDetail";
+import Home from "./Components/Home";
 
 const drawerWidth = 350;
 
@@ -199,6 +200,7 @@ export default function App() {
                         padding: theme.spacing(5),
                     }}>
                             <Routes>
+                                <Route path="" element={<Home/>} />
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
