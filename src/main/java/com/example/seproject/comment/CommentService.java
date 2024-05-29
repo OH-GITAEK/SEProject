@@ -38,11 +38,18 @@ public class CommentService {
         Comment comment = Comment.createComment(commentForm, issue, memberEntity);
         Comment created = commentRepository.save(comment);
 
-        String isPlUser = issue.getAssignee().getMemberName();
-        if(isPlUser.equals(myMemberName)){
-            issue.setFixer(issue.getAssignee());
-            issueRepository.save(issue);
+        MemberEntity assignee = issue.getAssignee();
+        if (assignee != null) {
+            String isPlUser = assignee.getMemberName();
+            if(isPlUser.equals(myMemberName)){
+                issue.setFixer(issue.getAssignee());
+            }
+            // assigneeName 사용
+        } else {
+            // assignee가 null인 경우 처리
+            System.out.println("Assignee is null");
         }
+        issueRepository.save(issue);
         return CommentForm.createCommentForm(created);
     }
 }

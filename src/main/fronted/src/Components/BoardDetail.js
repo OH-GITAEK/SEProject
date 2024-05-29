@@ -84,7 +84,7 @@ const BoardDetail = () => {
     //// 임시 주소
     useEffect(() => {
         if (Issue) {
-            axios.get(`/api/projects/${Project.projectId}/issues/${Issue.issueId}/comments`)
+            axios.get(`/api/projects/${Project.id}/issues/${Issue.id}/comments`)
                 .then((response) => {
                     setRows((prevRows) => [...prevRows, ...response.data]);
                 })
@@ -104,7 +104,7 @@ const BoardDetail = () => {
     };
 
     const handleCreateComment = () => {
-        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}/CommentCreate`);
+        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}/CommentCreate`, { state: { Issue, Project}});
     };
 
     const handleSearchChange = (event) => {

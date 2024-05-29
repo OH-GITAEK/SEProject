@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import './Writing.css';
 import axios from "axios"; // 팝업창에 대한 CSS 파일을 import
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -16,9 +16,11 @@ const CommentCreate = () => {
     const { projectData, setProjectData } = useContext(ProjectContext);
     const { issueData, setIssueData } = useContext(IssueContext);
     const navigate = useNavigate();
+    const location = useLocation();
+    const { Issue, Project } = location.state;
 
     const handleCreate = () => {
-        axios.post(`/api/projects/${projectData.projectTitle}/issues/${issueData.issueId}/comments/create`, {
+        axios.post(`/api/projects/${Project.id}/issues/${Issue.id}/comments/create`, {
             content: content
         })
             .then((response) => {
