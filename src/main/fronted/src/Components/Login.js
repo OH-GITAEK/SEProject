@@ -7,12 +7,13 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
-    const { userData, setUserData } = useContext(UserContext);
-  const [isSignUp, setIsSignUp] = useState(false); // 로그인 상태
+    
+  const { userData, setUserData, isLoggedIn, setIsLoggedIn } = useContext(UserContext); // UserContext로부터 변수 상속
+  const [isSignUp, setIsSignUp] = useState(false); // 회원가입 버튼 눌렀는지
   const [showPassword, setShowPassword] = useState(false); // 비번 표시
-    const navigate = useNavigate();
-    // 로그인 로직
+  const navigate = useNavigate();
+  
+  /* 로그인 로직 */
   const handleLogin = (event) => {
     event.preventDefault();
     axios.post('/api/member/login', {
@@ -21,29 +22,63 @@ export default function Login() {
     })
         .then((response) => {
             if(response.data.memberEmail === event.target.memberEmail.value && response.data.memberPassword === event.target.memberPassword.value){
-                setUserData(response.data);
+                setUserData({memberEmail: response.data.memberEmail,
+                    memberName: response.data.memberName
+                });
+                sessionStorage.setItem("userData", JSON.stringify(response.data));
                 setIsLoggedIn(true);
                 navigate(`/Project`);
             }
             else {
                 alert('이메일 혹은 비밀번호가 틀렸습니다.');
-                navigate(`/`);
+                navigate(``);
             }
         })
         .catch(function (error) {
             console.log(error);
             alert('인터넷 연결상태를 확인하세요.');
-            navigate(`/`);
+            navigate(``);
         });
   };
 
-  // 로그아웃
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserData({ id: 0, memberEmail: "", memberPassword: "", memberName: ""});
-      navigate(`/`);
-  };
+    /* 로그아웃 로직 */
+    const handleLogout = () => {
+        axios.post('/api/member/logout')
+            .then((response) => {
+                setIsLoggedIn(false);
+                // 세션 스토리지에서 정리
+                sessionStorage.removeItem('userData');
+                sessionStorage.removeItem('currentProjectId');
+                sessionStorage.removeItem('currentIssueId');
+                setUserData(null);
+                navigate(``);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('인터넷 연결상태를 확인하세요.');
+                navigate(``);
+            });
+    };
 
+
+  // 로그인하면 유저 정보 표시
+    if (isLoggedIn) {
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, padding: '40px', textAlign: 'center'}}>
+                <h1>환영합니다!<br/>{userData.memberName}</h1>
+                <Button onClick={handleLogout} variant="contained" sx={{
+                    backgroundColor: '#03C75A', // 네이버 초록색
+                    '&:hover': {
+                        backgroundColor: '#03C75A', // 네이버 초록색 호버
+                    },
+                }}>
+                    로그아웃
+                </Button>
+            </Box>
+        );
+    }
+
+  /* 회원가입 로직 */
   const handleSignUp = (event) => {
     event.preventDefault();
     setIsSignUp(true);
@@ -57,28 +92,12 @@ export default function Login() {
         event.preventDefault();
     };
 
-  if (isLoggedIn) {
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, padding: '40px'}}>
-            <form id='loginform' onSubmit={handleLogin} method="post">
-        <h1>환영합니다! <br/> {userData.memberName}</h1>
-          <Button onClick={handleLogout} variant="contained" sx={{
-              backgroundColor: '#03C75A', // 네이버 초록색
-              '&:hover': {
-                  backgroundColor: '#03C75A', // 네이버 초록색 호버
-              },
-          }}>
-              로그아웃
-          </Button>
-            </form>
-      </Box>
-    );
-  }
-
   if(isSignUp){
     return (<Signup/>);
   }
 
+
+  /*페이지 구성*/
   return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, padding: '40px'}}>
           <form id='loginform' onSubmit={handleLogin} method="post">

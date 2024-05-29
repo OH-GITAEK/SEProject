@@ -1,7 +1,4 @@
-import './App.css';
-import BoardDetail from "./Components/BoardDetail";
 import {Route, Routes, useLocation} from 'react-router-dom';
-import Login from "./Components/Login.js";
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -21,30 +18,19 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import React from "react";
-import Project from "./page/Project";
-import Issue from "./page/Issue";
-import Test from "./Testpage/Test";
+import Project from "./Components/Project";
 import {UserProvider} from "./Components/Usercontext";
 import ProjectCreate from "./Components/ProjectCreate";
 import ProjectDetail from "./Components/ProjectDetail";
-import {ProjectProvider} from "./Components/Projectcontext";
 import IssueCreate from "./Components/IssueCreate";
-import {IssueProvider} from "./Components/Issuecontext";
-import CommentCreate from "./Components/CommentCreate";
+import Login from "./Components/Login.js";
+import IssueDetail from "./Components/IssueDetail";
 
 const drawerWidth = 350;
-
-const menuItems = {
-    '홈': ['/', <HomeIcon />],
-    '프로젝트': ['/Project', <DesktopWindowsIcon />],
-    '이슈' : ['/할당된 이슈로 찾아가게 해야함', <NotificationsIcon/>],
-    '계정': ['/', <AccountCircleIcon />],
-};
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -94,7 +80,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function App() {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const location = useLocation();
 
     const handleDrawerOpen = () => {
@@ -131,6 +117,7 @@ export default function App() {
 
     return (
         <div className="App">
+            <UserProvider>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar position="fixed" open={open}>
@@ -172,21 +159,33 @@ export default function App() {
                         </IconButton>
                     </DrawerHeader>
                     <Divider />
-                    <UserProvider>
                         <Login />
-                    </UserProvider>
                     <Divider />
                     <List>
-                        {Object.entries(menuItems).map(([text, icon], index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
+                            <ListItem key='홈' disablePadding>
+                                <ListItemButton href={''}>
                                     <ListItemIcon>
-                                        {icon[1]}
+                                        <HomeIcon/>
                                     </ListItemIcon>
-                                    <ListItemText primary={text} />
+                                    <ListItemText primary='홈' />
                                 </ListItemButton>
                             </ListItem>
-                        ))}
+                        <ListItem key='프로젝트' disablePadding>
+                            <ListItemButton href={'/Project'}>
+                                <ListItemIcon>
+                                    <DesktopWindowsIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary='프로젝트' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key='계정' disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <AccountCircleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary='계정' />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </Drawer>
                 <Main open={open}>
@@ -199,33 +198,17 @@ export default function App() {
                         flexGrow: 1,
                         padding: theme.spacing(5),
                     }}>
-                        <IssueProvider>
-                        <ProjectProvider>
-                        <UserProvider>
                             <Routes>
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
-<<<<<<< HEAD
-                                <Route path="/Project/Issue" element={<Issue />} />
-                                <Route path="/Project/Issue/BoardDetail" element={<BoardDetail />} />
-=======
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
-                                <Route path="/Project/:projectTitle/:issueTitle" element={<BoardDetail/>} />
-<<<<<<< HEAD
-                                <Route path="/Project/Issue/:issueTitle" element={<BoardDetail />} />
->>>>>>> e0425af240de77c6b917d2e0b6d0746e639be0bf
-=======
-                                <Route path="/Project/:projectTitle/:issueTitle/CommentCreate" element={<CommentCreate/>} />
->>>>>>> 0ba7c223d61117f42b8f409200ec052d8f9fbba8
-                                <Route path="/Testpage/Test" element={<Test />} />
+                                <Route path="/Project/:projectTitle/:issueTitle" element={<IssueDetail/>} />
                             </Routes>
-                        </UserProvider>
-                        </ProjectProvider>
-                        </IssueProvider>
                     </Box>
                 </Main>
             </Box>
+        </UserProvider>
         </div>
     );
 }

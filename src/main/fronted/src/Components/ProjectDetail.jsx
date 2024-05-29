@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Paper, Typography, List, ListItem, ListItemText, Box, Button, Divider, IconButton, Tooltip } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    Paper, Typography, List, Box, Button, Divider, IconButton, Tooltip, Chip, Avatar,
+    Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, styled, alpha, InputBase
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { UserContext } from "./Usercontext";
 
 // 검색바 style
 const Search = styled('div')(({ theme }) => ({
@@ -59,45 +54,44 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ProjectDetail = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-    const { Project } = location.state;
+    const [currentProject, setCurrentProject] = useState({});
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
+    const { currentProjectId, setCurrentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
     const columns = [
-        { id: 'issueTitle', label: 'Title', minWidth: 170 },
-        { id: 'issueDescription', label: 'Description', minWidth: 100 },
-        { id: 'reportedDate', label: 'Reported Date', minWidth: 170, align: 'right' },
-        { id: 'reporter', label: 'Reporter', minWidth: 170, align: 'right' },
+        { id: 'issueTitle', label: '제목', minWidth: 170 },
+        { id: 'issueDescription', label: '내용', minWidth: 100 },
+        { id: 'reportedDate', label: '생성날짜', minWidth: 170, align: 'right' },
+        { id: 'reporter', label: '생성자', minWidth: 170, align: 'right' },
     ];
 
-    const [rows, setRows] = useState([
-        {
-            id: 0,
-            projectId: 0,
-            issueTitle: "testTitle",
-            issueDescription: "testDescription",
-            reporter: "lcw",
-            fixer: "lcw",
-            assignee: "lcw",
-            reportedDate: "2024-05-20T09:25:54.489Z",
-            priority: "0",
-            status: "testing"
-        }
-    ]);
+    const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        if (Project) {
-            axios.get(`/api/projects/${Project.id}/issues`)
+        if (currentProjectId) {
+            axios.get(`/api/projects/${currentProjectId}`)
                 .then((response) => {
-                    setRows((prevRows) => [...prevRows, ...response.data]);
+                    setCurrentProject(response.data);
                 })
                 .catch((error) => {
                     console.error('Error fetching data:', error);
                 });
         }
-    }, [Project]);
+    }, [currentProject,currentProjectId]);
+
+    useEffect(() => {
+        if (currentProject && currentProject.id) {
+            axios.get(`/api/projects/${currentProject.id}/issues`)
+                .then((response) => {
+                    setRows(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    }, [currentProject]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -109,7 +103,7 @@ const ProjectDetail = () => {
     };
 
     const handleCreateIssue = () => {
-        navigate(`/Project/${Project.projectTitle}/IssueCreate`, { state: {Project}});
+        navigate(`/Project/${currentProject.projectTitle}/IssueCreate`, { state: { currentProject } });
     };
 
     const handleSearchChange = (event) => {
@@ -123,89 +117,56 @@ const ProjectDetail = () => {
         row.reporter.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleRowClick = (Issue) => {
-        navigate(`/Project/${Project.projectTitle}/${Issue.issueTitle}`, { state: { Issue, Project}});
+    const handleRowClick = (issue) => {
+        setCurrentIssueId(issue.id);
+        navigate(`/Project/${currentProject.projectTitle}/${issue.issueTitle}`, { state: { currentProject, issue } });
     };
-
-    const handleDeleteProject = () => {
-        // axios.delete(`/api/projects/${Project.projectId}`)
-        //     .then(() => {
-        //         navigate('/Project');
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error deleting project:', error);
-        //     });
-    };
-
-    if (!Project) {
-        return (
-            <Paper sx={{ padding: 3, margin: 'auto', maxWidth: 800 }}>
-                <Typography variant="h5" gutterBottom>
-                    연결 끊김
-                </Typography>
-                <Button variant="contained" onClick={() => navigate('/Project')} sx={{
-                    mt: 2,
-                    backgroundColor: '#03C75A', // 네이버 초록색
-                    '&:hover': {
-                        backgroundColor: '#03C75A', // 네이버 초록색 호버
-                    },
-                }}>
-                    뒤로 가기
-                </Button>
-            </Paper>
-        );
-    }
 
     return (
         <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <Typography variant="h4" align="center" gutterBottom >
-                    {Project.projectTitle}
+                <Typography variant="h4" align="center" gutterBottom>
+                    {currentProject.projectTitle}
                 </Typography>
                 <Tooltip title="Delete">
-                    <IconButton onClick={handleDeleteProject}>
+                    <IconButton>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
             </Box>
             <Box sx={{ marginBottom: 2 }}>
                 <Typography variant="body1" gutterBottom>
-                    {Project.projectDescription}
+                    {currentProject.projectDescription}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    Reported Date: {Project.reportedDate}
+                    Reported Date: {currentProject.reportedDate}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    Admin: {Project.admin.memberName}
+                    Admin: {currentProject.admin}
                 </Typography>
             </Box>
             <Box sx={{ marginBottom: 1, width: '100%' }}>
-                <Typography variant="h6" align="left">PL Users:</Typography>
                 <List dense>
-                    {Project.plUser.map((user, index) => (
-                        <ListItem key={index} sx={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}>
-                            <ListItemText primary={user.memberEmail} />
-                        </ListItem>
+                    {currentProject.plUser?.map((user, index) => (
+                        <Chip
+                            key={index}
+                            avatar={<Avatar>P</Avatar>}
+                            label={user}
+                        />
                     ))}
-                </List>
-            </Box>
-            <Box sx={{ marginBottom: 1, width: '100%' }}>
-                <Typography variant="h6" align="left">Dev Users:</Typography>
-                <List dense>
-                    {Project.devUser.map((user, index) => (
-                        <ListItem key={index} sx={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}>
-                            <ListItemText primary={user.memberEmail} />
-                        </ListItem>
+                    {currentProject.devUser?.map((user, index) => (
+                        <Chip
+                            key={index}
+                            avatar={<Avatar>D</Avatar>}
+                            label={user}
+                        />
                     ))}
-                </List>
-            </Box>
-            <Box sx={{ marginBottom: 1, width: '100%' }}>
-                <Typography variant="h6" align="left">Test Users:</Typography>
-                <List dense>
-                    {Project.testUser.map((user, index) => (
-                        <ListItem key={index} sx={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}>
-                            <ListItemText primary={user.memberEmail} />
-                        </ListItem>
+                    {currentProject.testUser?.map((user, index) => (
+                        <Chip
+                            key={index}
+                            avatar={<Avatar>T</Avatar>}
+                            label={user}
+                        />
                     ))}
                 </List>
             </Box>
@@ -252,20 +213,18 @@ const ProjectDetail = () => {
                     <TableBody>
                         {filteredRows
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id} onClick={() => handleRowClick(row)}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </StyledTableRow>
-                                );
-                            })}
+                            .map((row) => (
+                                <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id} onClick={() => handleRowClick(row)}>
+                                    {columns.map((column) => {
+                                        const value = row[column.id];
+                                        return (
+                                            <TableCell key={column.id} align={column.align}>
+                                                {value}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </StyledTableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </TableContainer>

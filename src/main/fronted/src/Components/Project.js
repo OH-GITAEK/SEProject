@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -14,8 +14,9 @@ import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import axios from 'axios';
+import { UserContext } from './Usercontext';
 
-// 검색바 style
+/* 검색바 style */
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -52,6 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
+/* 테이블 style */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     cursor: 'pointer',
     '&:hover': {
@@ -64,6 +66,7 @@ export default function Project() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const { setCurrentProjectId } = useContext(UserContext); // UserContext로부터 변수 상속
     const columns = [
         { id: 'projectTitle', label: 'Title', minWidth: 170 },
         { id: 'projectDescription', label: 'Description', minWidth: 100 },
@@ -71,31 +74,31 @@ export default function Project() {
         { id: 'admin', label: 'Admin', minWidth: 170, align: 'right' },
     ];
 
-    const [rows, setRows] = useState([
-        {
-            id: 0,
-            projectTitle: "Project0",
-            projectDescription: "This is a sample project.",
-            reportedDate: "2024-05-20T09:22:52.532Z",
-            admin: {
-                memberName: "LCW"
-            },
-            plUser: [{ memberEmail: "pl@example.com" }],
-            devUser: [{ memberEmail: "dev@example.com" }],
-            testUser: [{ memberEmail: "test@example.com" }]
-        }
-    ]);
+    const [rows, setRows] = useState([{
+        id: 0,
+        projectTitle: "",
+        projectDescription: "",
+        reportedDate: "",
+        admin: {
+            memberName: ""
+        },
+        plUser: [{ memberName: "" }],
+        devUser: [{ memberName: "" }],
+        testUser: [{ memberName: "" }]
+    }]);
 
+    /* 테이블에 project data 가져온다 */
     useEffect(() => {
         axios.get('/api/projects')
             .then((response) => {
-                setRows((prevRows) => [...prevRows, ...response.data]);
+                setRows(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
             });
-    }, []);
+    }, [rows]);
 
+    /* 테이블에 페이지 넘기기 */
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -105,10 +108,12 @@ export default function Project() {
         setPage(0);
     };
 
+    /* 프로젝트 생성 */
     const handleCreateProject = () => {
         navigate('/ProjectCreate');
     };
 
+    /* 검색 처리 */
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
@@ -120,8 +125,11 @@ export default function Project() {
         row.admin.memberName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    /* 프로젝트를 누르면 프로젝트의 상세로 이동 */
     const handleRowClick = (Project) => {
-        navigate(`/Project/${Project.projectTitle}`, { state: { Project } });
+        window.sessionStorage.setItem("currentProjectId", Project.id);
+        setCurrentProjectId(Project.id);
+        navigate(`/Project/${Project.projectTitle}`);
     };
 
     return (
