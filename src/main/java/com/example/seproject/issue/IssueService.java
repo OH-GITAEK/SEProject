@@ -74,7 +74,7 @@ public class IssueService {
             }
         }
         MemberEntity assignee = memberService.findByMemberName(issueForm.getAssignee());
-        Issue issue =   issueRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Issue not found"));;
+        Issue issue =   issueRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Issue not found"));
         issue.setStatus("assigned");
         issue.setAssignee(assignee);
         Issue created = issueRepository.save(issue);
@@ -130,4 +130,27 @@ public class IssueService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public IssueForm update(Long projectId, Long id, IssueForm issueForm) {
+        // 프로젝트가 존재하는지 확인
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid project Id"));
+
+        // 이슈가 존재하는지 확인
+        Issue issue = issueRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid issue Id"));
+
+        // 이슈가 해당 프로젝트에 속하는지 확인
+        if (!issue.getProject().getId().equals(projectId)) {
+            throw new IllegalArgumentException("Issue does not belong to the specified project");
+        }
+        issue.setIssueTitle(issueForm.getIssueTitle());
+        issue.setIssueDescription(issueForm.getIssueDescription());
+        issue.setKeyWords(issueForm.getKeyWords());
+        issue.setPriority(issueForm.getPriority());
+        issue.setStatus(issueForm.getStatus());
+        issueRepository.save(issue);
+
+        return IssueForm.createIssueForm(issue);
+    }
 }

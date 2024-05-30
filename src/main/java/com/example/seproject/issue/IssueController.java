@@ -46,6 +46,14 @@ public class IssueController {
         return issueService.updateDev(projectId,id,issueForm,myMemberName);
     }
 
+    @PostMapping("api/projects/{projectId}/issues/{id}/update")
+    public IssueForm update(@Valid @RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("id") Long id,@PathVariable("projectId") Long projectId, HttpSession session){
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException("Validation failed");
+        }
+        return issueService.update(projectId,id,issueForm);
+    }
+
     @GetMapping("/api/projects/{projectId}/issues/{id}/recommend")
     public List<MemberDTO> recommendDevUser(@PathVariable("projectId") Long projectId,@RequestBody List<String> keyWords) {
         return issueService.recommendDevUsers(projectId,keyWords);
