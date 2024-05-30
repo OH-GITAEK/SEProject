@@ -18,7 +18,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import React from "react";
@@ -30,6 +29,9 @@ import IssueCreate from "./Components/IssueCreate";
 import Login from "./Components/Login.js";
 import IssueDetail from "./Components/IssueDetail";
 import Home from "./Components/Home";
+import IssueUpdate from "./Components/IssueUpdate";
+import IssueAnalysis from "./Components/IssueAnalysis";
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const drawerWidth = 350;
 
@@ -179,14 +181,14 @@ export default function App() {
                                 <ListItemText primary='프로젝트' />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key='계정' disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <AccountCircleIcon />
-                                </ListItemIcon>
-                                <ListItemText primary='계정' />
-                            </ListItemButton>
-                        </ListItem>
+                        {/*<ListItem key='계정' disablePadding>*/}
+                        {/*    <ListItemButton>*/}
+                        {/*        <ListItemIcon>*/}
+                        {/*            <AccountCircleIcon />*/}
+                        {/*        </ListItemIcon>*/}
+                        {/*        <ListItemText primary='계정' />*/}
+                        {/*    </ListItemButton>*/}
+                        {/*</ListItem>*/}
                     </List>
                 </Drawer>
                 <Main open={open}>
@@ -204,8 +206,10 @@ export default function App() {
                                 <Route path="/Project" element={<Project/>} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate/>} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
+                                <Route path="/Project/:projectTitle/IssueAnalysis" element={<IssueAnalysis />} />
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
                                 <Route path="/Project/:projectTitle/:issueTitle" element={<IssueDetail/>} />
+                                <Route path="/Project/:projectTitle/:issueTitle/IssueUpdate" element={<IssueUpdate/>} />
                             </Routes>
                     </Box>
                 </Main>

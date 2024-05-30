@@ -9,6 +9,7 @@ import axios from "axios";
 import {Autocomplete, Chip} from "@mui/material";
 
 export default function ProjectCreate(){
+    sessionStorage.removeItem('currentIssueId');
     const [projectTitle, setProjectTitle] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [plUser, setPlUser] = useState('');
@@ -22,7 +23,7 @@ export default function ProjectCreate(){
             projectDescription: projectDescription,
             plUser: plUser,
             devUser: devUser,
-            testUser: testUser
+            testUser: testUser,
         })
             .then((response) => {
                 console.log(response);

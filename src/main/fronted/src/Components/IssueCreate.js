@@ -6,25 +6,34 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+
+// 키워드 목록
+const options = [
+    "디버깅", "로그 분석", "버그 수정", "코드 리뷰", "에러 메시지 분석", "핫픽스 배포",
+    "문제 재현", "테스트 케이스 작성", "성능 튜닝", "코드 롤백", "기술 지원", "패치 적용",
+    "기능 테스트", "환경 설정", "임시 해결책", "원인 추적", "시스템 모니터링", "오류 로그 수집",
+    "기술 문서 참조", "협업 툴 사용", "기타"
+];
+
 
 const IssueCreate = () => {
     const location = useLocation();
     const [issueTitle, setIssueTitle] = useState('');
     const [issueDescription, setIssueDescription] = useState('');
-    const [issueAssignee, setAssignee] = useState('');
     const { currentProject } = location.state || {};
     const navigate = useNavigate();
+    const [keyword, setKeyword] = useState([]);
+    const [priority, setPriority] = useState('major');
 
     const handleCreate = () => {
         axios.post(`/api/projects/${currentProject.id}/issues/create`, {
             issueTitle: issueTitle,
-            issueDescription: issueDescription
+            issueDescription: issueDescription,
+            status: 'new',
+            priority: priority
         })
-            .then((response) => {
-                return axios.post(`/api/projects/${currentProject.id}/issues/${response.data.id}/update-dev`, {
-                    assignee: issueAssignee
-                });
-            })
             .then(() => {
                 alert('이슈 생성이 완료되었습니다.');
                 navigate(`/Project/${currentProject.projectTitle}`);
@@ -75,26 +84,68 @@ const IssueCreate = () => {
                         },
                     }}
                 />
-            {/*auto complite로 변경*/}
-                <TextField
-                    label="담당자"
-                    value={issueAssignee}
-                    onChange={(e) => setAssignee(e.target.value)}
-                    margin="normal"
-                    color="success"
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#03C75A', // 포커스 시 테두리 색상
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: '#03C75A', // 기본 레이블 색상
-                            },
-                        },
-                    }}
-                />
                 {/*keyword Autocomplete 추가*/}
-                <Button variant="contained" color="primary" onClick={handleCreate} sx={{ mt: 3,
+                <Autocomplete
+                    id="priority"
+                    options={["blocker","critical","major","minor","trivial"]}
+                    required
+                    value={priority}
+                    onChange={(event, newValue) => {
+                        setPriority(newValue);
+                    }}
+                    disablePortal
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                },
+                            }}
+                            label="우선순위"
+                            required
+                            margin="normal"
+                        />
+                    )}
+                />
+                <Autocomplete
+                    multiple
+                    id="keyword"
+                    options={options}
+                    required
+                    value={keyword}
+                    onChange={(event, newValue) => {
+                        setKeyword(newValue);
+                    }}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option.title} {...getTagProps({ index })} />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                },
+                            }}
+                            label="키워드"
+                            required
+                            margin="normal"
+                        />
+                    )}
+                />
+                <Button variant="contained" onClick={handleCreate} sx={{ mt: 3,
                     backgroundColor: '#03C75A', // 네이버 초록색
                     '&:hover': {
                         backgroundColor: '#03C75A', // 네이버 초록색 호버
