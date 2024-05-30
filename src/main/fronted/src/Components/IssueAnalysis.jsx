@@ -62,8 +62,18 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    <Tab label="일별 이슈 발생 횟수" {...a11yProps(0)} />
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{
+                    '& .MuiTabs-indicator': {
+                        backgroundColor: '#03C75A',
+                    },
+                    '& .MuiTab-root': {
+                        color: 'rgba(0, 0, 0, 0.54)', // 기본 탭 색상
+                    },
+                    '& .Mui-selected': {
+                        color: '#00a152', // 선택된 탭 색상
+                    },
+                }}>
+                    <Tab label="일별 이슈 발생 횟수" {...a11yProps(0)}  />
                     <Tab label="월 별 이슈 발생 횟수" {...a11yProps(1)} />
                     <Tab label="트랜드" {...a11yProps(2)} />
                 </Tabs>

@@ -15,10 +15,14 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
-    position: 'absolute',
-    '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
-        top: theme.spacing(2),
-        left: theme.spacing(2),
+    '& .MuiSpeedDial-fab': {
+        backgroundColor: '#03C75A',
+        padding: 'none',
+        boxShadow: 'none',
+        '&:hover': {
+            backgroundColor: '#03C75A',
+            padding: 'none'
+        },
     },
 }));
 

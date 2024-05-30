@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Paper, Typography, Box, Button, Divider, TextField } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,13 +16,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({}));
+const StyledTableRow = styled(TableRow)(({ }) => ({}));
 
-const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
-    position: 'absolute',
-    '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
-        top: theme.spacing(2),
-        left: theme.spacing(2),
+const StyledSpeedDial = styled(SpeedDial)(({ }) => ({
+    '& .MuiSpeedDial-fab': {
+        backgroundColor: '#03C75A',
+        padding: 'none',
+        boxShadow: 'none',
+        '&:hover': {
+            backgroundColor: '#03C75A',
+            padding: 'none'
+        },
     },
 }));
 
@@ -32,11 +36,9 @@ const actions = [
 ];
 
 const IssueDetail = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-    const { Project, Issue } = location.state || {}; // location.state로부터 Project와 Issue 가져옴
-    const [currentProject, setCurrentProject] = useState(Project);
-    const [currentIssue, setCurrentIssue] = useState(Issue);
+    const [currentProject, setCurrentProject] = useState({});
+    const [currentIssue, setCurrentIssue] = useState({});
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
     const columns = [
@@ -50,7 +52,7 @@ const IssueDetail = () => {
 
     // Project 또는 Issue가 없을 경우 서버에서 데이터 가져옴
     useEffect(() => {
-        if (!Issue || !Project) {
+        if (currentProjectId || currentIssueId) {
             axios.get(`/api/projects/${currentProjectId}`)
                 .then((response) => {
                     setCurrentProject(response.data);
@@ -68,11 +70,11 @@ const IssueDetail = () => {
                     navigate('/Project');
                 });
         }
-    }, [currentProjectId, currentIssueId, Issue, Project, navigate]);
+    }, [currentProjectId, currentIssueId, navigate]);
 
     // 현재 이슈의 댓글 데이터 가져옴
     useEffect(() => {
-        if (currentIssue) {
+        if (currentIssue && currentIssue.id) {
             axios.get(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/comments`)
                 .then((response) => {
                     setRows(response.data);

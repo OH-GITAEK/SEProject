@@ -12,9 +12,9 @@ export default function ProjectCreate(){
     sessionStorage.removeItem('currentIssueId');
     const [projectTitle, setProjectTitle] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
-    const [plUser, setPlUser] = useState('');
-    const [devUser, setDevUser] = useState('');
-    const [testUser, setTestUser] = useState('');
+    const [plUser, setPlUser] = useState([]);
+    const [devUser, setDevUser] = useState([]);
+    const [testUser, setTestUser] = useState([]);
     const navigate = useNavigate();
 
     const handleCreate = () => {
@@ -28,13 +28,12 @@ export default function ProjectCreate(){
             .then((response) => {
                 console.log(response);
                 alert('프로젝트 생성이 완료되었습니다.');
+                navigate('/Project');
             })
             .catch(function (error) {
                 console.log(error);
                 alert('프로젝트를 다시 생성해주세요.');
             });
-        navigate(0);
-        navigate('/Project');
     };
 
     return (
@@ -78,39 +77,40 @@ export default function ProjectCreate(){
                     }}
                 />
                 <Autocomplete
-                multiple
-                id="tags-filled"
-                options={[]}
-                fullWidth
-                required
-                value={plUser}
-                onChange={(event, newValue) => {
-                    setPlUser(newValue);
-                }}
-                freeSolo
-                renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                        <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                    ))
-                }
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        color="success"
-                        variant="outlined"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#03C75A', // 포커스 시 테두리 색상
+                    multiple
+                    id="tags-filled"
+                    options={[]}
+                    fullWidth
+                    required
+                    value={plUser}
+                    onChange={(event, newValue) => {
+                        setPlUser(newValue);
+                    }}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => {
+                            const tagProps = getTagProps({ index });
+                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
+                        })
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
                                 },
-                            },
-                        }}
-                        label="PL"
-                        required
-                        margin="normal"
-                    />
-                )}
-            />
+                            }}
+                            label="Pl"
+                            required
+                            margin="normal"
+                        />
+                    )}
+                />
                 <Autocomplete
                     multiple
                     id="tags-filled"
@@ -123,9 +123,10 @@ export default function ProjectCreate(){
                     }}
                     freeSolo
                     renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                        ))
+                        value.map((option, index) => {
+                            const tagProps = getTagProps({ index });
+                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
+                        })
                     }
                     renderInput={(params) => (
                         <TextField
@@ -157,9 +158,10 @@ export default function ProjectCreate(){
                     }}
                     freeSolo
                     renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                        ))
+                        value.map((option, index) => {
+                            const tagProps = getTagProps({ index });
+                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
+                        })
                     }
                     renderInput={(params) => (
                         <TextField

@@ -74,7 +74,7 @@ const IssueCreate = () => {
                     fullWidth
                     multiline
                     required
-                    rows={4}
+                    rows={6}
                     color="success"
                     sx={{
                         '& .MuiOutlinedInput-root': {
@@ -86,46 +86,22 @@ const IssueCreate = () => {
                 />
                 {/*keyword Autocomplete 추가*/}
                 <Autocomplete
-                    id="priority"
-                    options={["blocker","critical","major","minor","trivial"]}
-                    required
-                    value={priority}
-                    onChange={(event, newValue) => {
-                        setPriority(newValue);
-                    }}
-                    disablePortal
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            color="success"
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
-                                    },
-                                },
-                            }}
-                            label="우선순위"
-                            required
-                            margin="normal"
-                        />
-                    )}
-                />
-                <Autocomplete
                     multiple
                     id="keyword"
                     options={options}
                     required
                     value={keyword}
+                    fullWidth
+                    margin="normal"
                     onChange={(event, newValue) => {
                         setKeyword(newValue);
                     }}
                     freeSolo
                     renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip variant="outlined" label={option.title} {...getTagProps({ index })} />
-                        ))
+                        value.map((option, index) => {
+                            const tagProps = getTagProps({ index });
+                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
+                        })
                     }
                     renderInput={(params) => (
                         <TextField
@@ -140,6 +116,36 @@ const IssueCreate = () => {
                                 },
                             }}
                             label="키워드"
+                            required
+                            margin="normal"
+                        />
+                    )}
+                />
+                <Autocomplete
+                    id="priority"
+                    options={["blocker","critical","major","minor","trivial"]}
+                    required
+                    value={priority}
+                    onChange={(event, newValue) => {
+                        setPriority(newValue);
+                    }}
+                    sx={{width: '25%'}}
+                    margin="normal"
+                    disablePortal
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                },
+                                width: '300'
+                            }}
+                            label="우선순위"
                             required
                             margin="normal"
                         />
