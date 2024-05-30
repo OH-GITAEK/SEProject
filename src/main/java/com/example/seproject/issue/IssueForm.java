@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,6 +36,7 @@ public class IssueForm {
 
     @Size(max=200)
     private String status;
+    private List<String> keyWords;
 
     public static IssueForm createIssueForm(Issue issue){
         String fixer;
@@ -61,7 +63,8 @@ public class IssueForm {
                 assignee,
                 issue.getReportedDate(),
                 issue.getPriority(),
-                issue.getStatus()
+                issue.getStatus(),
+                issue.getKeyWords()
         );
     }
 }

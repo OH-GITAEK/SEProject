@@ -48,21 +48,25 @@ public class Issue {
 //    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
 //    private List<Comment> commentList;
 
+    @ElementCollection
+    private List<String> keyWords;
+
     @ManyToOne
     @JoinColumn(name="project_id")
     private Project project;
 
-    public Issue(Long id, String issueTitle, String issueDescription, String priority, String status, Project project, MemberEntity reporter,MemberEntity fixer,MemberEntity assignee) {
+    public Issue(Long id, String issueTitle, String issueDescription, String priority, String status, Project project, MemberEntity reporter,MemberEntity fixer,MemberEntity assignee,List<String> keyWords) {
         this.id = id;
         this.issueTitle = issueTitle;
         this.issueDescription = issueDescription;
         this.reportedDate = LocalDateTime.now();
-        this.priority = (priority != null) ? priority : "major";
-        this.status = (status != null) ? status : "new";
+        this.priority = priority;
+        this.status = status;
         this.project = project;
         this.reporter = reporter;
         this.fixer = fixer;
         this.assignee = assignee;
+        this.keyWords = keyWords;
     }
 
     public static Issue createIssue(IssueForm issueForm, Project project, MemberEntity reporter,MemberEntity fixer,MemberEntity assignee){
@@ -71,12 +75,13 @@ public class Issue {
                 issueForm.getId(),
                 issueForm.getIssueTitle(),
                 issueForm.getIssueDescription(),
-                issueForm.getPriority(),
-                issueForm.getStatus(),
+                (issueForm.getPriority() != null && !issueForm.getPriority().isEmpty())  ? issueForm.getPriority() : "major",
+                (issueForm.getStatus() != null && !issueForm.getStatus().isEmpty()) ? issueForm.getStatus() : "new",
                 project,
                 reporter,
                 fixer,
-                assignee
+                assignee,
+                issueForm.getKeyWords()
         );
     }
 }
