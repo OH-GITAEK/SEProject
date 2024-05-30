@@ -75,6 +75,7 @@ const IssueCreate = () => {
                         },
                     }}
                 />
+            {/*auto complite로 변경*/}
                 <TextField
                     label="담당자"
                     value={issueAssignee}
@@ -92,6 +93,7 @@ const IssueCreate = () => {
                         },
                     }}
                 />
+                {/*keyword Autocomplete 추가*/}
                 <Button variant="contained" color="primary" onClick={handleCreate} sx={{ mt: 3,
                     backgroundColor: '#03C75A', // 네이버 초록색
                     '&:hover': {
