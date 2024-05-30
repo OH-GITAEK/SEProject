@@ -1,5 +1,6 @@
 package com.example.seproject.issue;
 
+import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.project.ProjectService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,12 +38,24 @@ public class IssueController {
     }
 
     @PostMapping("api/projects/{projectId}/issues/{id}/update-dev")
-    public IssueForm updateDev(@Valid @RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("id") Long id,@PathVariable("projectId") Long projectId, HttpSession session){
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException("Validation failed");
-        }
+    public IssueForm updateDev(@RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("id") Long id,@PathVariable("projectId") Long projectId, HttpSession session){
+//        if (bindingResult.hasErrors()) {
+//            throw new ValidationException("Validation failed");
+//        }
         String myMemberName = (String)session.getAttribute("memberName");
         return issueService.updateDev(projectId,id,issueForm,myMemberName);
     }
 
+    @PostMapping("api/projects/{projectId}/issues/{id}/update")
+    public IssueForm update(@Valid @RequestBody IssueForm issueForm, BindingResult bindingResult, @PathVariable("id") Long id,@PathVariable("projectId") Long projectId, HttpSession session){
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException("Validation failed");
+        }
+        return issueService.update(projectId,id,issueForm);
+    }
+
+    @GetMapping("/api/projects/{projectId}/issues/{id}/recommend")
+    public List<MemberDTO> recommendDevUser(@PathVariable("projectId") Long projectId,@RequestBody List<String> keyWords) {
+        return issueService.recommendDevUsers(projectId,keyWords);
+    }
 }

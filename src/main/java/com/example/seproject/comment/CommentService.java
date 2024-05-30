@@ -43,6 +43,7 @@ public class CommentService {
             String isPlUser = assignee.getMemberName();
             if(isPlUser.equals(myMemberName)){
                 issue.setFixer(issue.getAssignee());
+                issue.setStatus("fixed");
             }
             // assigneeName 사용
         } else {
