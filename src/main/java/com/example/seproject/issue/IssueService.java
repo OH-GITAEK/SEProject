@@ -94,7 +94,7 @@ public class IssueService {
                 .collect(Collectors.toMap(
                         user -> user,
                         user -> projectIssues.stream()
-                                .filter(issue -> issue.getAssignee().equals(user))
+                                .filter(issue -> user.equals(issue.getAssignee()))
                                 .flatMap(issue -> issue.getKeyWords().stream())
                                 .filter(keyWords::contains)
                                 .count()
@@ -111,7 +111,7 @@ public class IssueService {
         if (recommendedUsers.isEmpty()) {
             recommendedUsers.addAll(devUsers.stream()
                     .sorted(Comparator.comparingLong(user -> projectIssues.stream()
-                                    .filter(issue -> issue.getFixer().equals(user)).count())
+                                    .filter(issue -> user.equals(issue.getFixer())).count())
                             .reversed())
                     .toList());
         } else {
@@ -119,7 +119,7 @@ public class IssueService {
             recommendedUsers.addAll(devUsers.stream()
                     .filter(user -> !recommendedUsers.contains(user))
                     .sorted(Comparator.comparingLong(user -> projectIssues.stream()
-                                    .filter(issue -> issue.getFixer().equals(user)).count())
+                                    .filter(issue -> user.equals(issue.getFixer())).count())
                             .reversed())
                     .toList());
         }
