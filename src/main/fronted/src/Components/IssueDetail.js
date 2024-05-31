@@ -1,62 +1,78 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useLocation} from 'react-router-dom';
-import { Paper, Typography, Box, Button, Divider, IconButton, Tooltip, TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Paper, Typography, Box, Button, Divider, TextField } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { styled} from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { UserContext } from './Usercontext';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledSpeedDial = styled(SpeedDial)(({theme }) => ({
+    '& .MuiSpeedDial-fab': {
+        backgroundColor: '#03C75A',
+        padding: 'none',
+        boxShadow: 'none',
+        '&:hover': {
+            backgroundColor: '#03C75A',
+            padding: 'none'
+        },
+    },
 }));
 
+const actions = [
+    { icon: <EditIcon />, name: '수정' },
+    { icon: <DeleteIcon />, name: '삭제' }
+];
+
 const IssueDetail = () => {
-    const location = useLocation();
-    const { Project, Issue } = location.state || {};
-    const [currentProject, setCurrentProject] = useState(Project);
-    const [currentIssue, setCurrentIssue] = useState(Issue);
+    const navigate = useNavigate();
+    const [currentProject, setCurrentProject] = useState({});
+    const [currentIssue, setCurrentIssue] = useState({});
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
     const columns = [
-        { id: 'memberEntity', label: 'Member Entity', minWidth: 170, align: 'left' },
-        { id: 'content', label: 'Content', minWidth: 170, align: 'center' },
+        { id: 'memberEntity', label: '계정', minWidth: 170, align: 'left' },
+        { id: 'content', label: '내용', minWidth: 170, align: 'center' },
+        { id: 'reportedDate', label: '날짜', minWidth: 170, align: 'right' }
     ];
-    const { currentProjectId, currentIssueId } = useContext(UserContext);
+    const { userData, currentProjectId, currentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
 
     const [rows, setRows] = useState([]);
-    const [loading, setLoading] = useState(true);
 
+    // Project 또는 Issue가 없을 경우 서버에서 데이터 가져옴
     useEffect(() => {
-        if (!Issue || !Project) {
+        if (currentProjectId || currentIssueId) {
             axios.get(`/api/projects/${currentProjectId}`)
                 .then((response) => {
                     setCurrentProject(response.data);
                     axios.get(`/api/projects/${currentProjectId}/issues/${currentIssueId}`)
                         .then((response) => {
                             setCurrentIssue(response.data);
-                            setLoading(false);
                         })
                         .catch((error) => {
                             console.error('Error fetching issue data:', error);
-                            setLoading(false);
+                            navigate('/Project');
                         });
                 })
                 .catch((error) => {
                     console.error('Error fetching project data:', error);
-                    setLoading(false);
+                    navigate('/Project');
                 });
-        } else {
-            setLoading(false);
         }
-    }, [currentProjectId, currentIssueId, Issue, Project]);
+    }, [currentProjectId, currentIssueId, navigate]);
 
+    // 현재 이슈의 댓글 데이터 가져옴
     useEffect(() => {
-        if (currentIssue) {
+        if (currentIssue && currentIssue.id) {
             axios.get(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/comments`)
                 .then((response) => {
                     setRows(response.data);
@@ -67,6 +83,7 @@ const IssueDetail = () => {
         }
     }, [currentProject, currentIssue]);
 
+    // 새로운 댓글 작성
     const [newComment, setNewComment] = useState('');
     const handleCommentSubmit = (e) => {
         e.preventDefault();
@@ -74,7 +91,7 @@ const IssueDetail = () => {
             content: newComment
         })
             .then((response) => {
-                setRows(prevRows => [...prevRows, response.data]);
+                setRows(response.data);
                 setNewComment('');
             })
             .catch((error) => {
@@ -83,21 +100,32 @@ const IssueDetail = () => {
             });
     };
 
+    // 더 보기 버튼 클릭 시 페이지 증가
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);
     };
 
     const displayedRows = rows.slice(0, (page + 1) * rowsPerPage);
 
-    if (loading) {
-        return (
-            <Paper sx={{ padding: 3, margin: 'auto', maxWidth: 800 }}>
-                <Typography variant="h5" gutterBottom>
-                    Loading...
-                </Typography>
-            </Paper>
-        );
-    }
+    // 수정 버튼 클릭 시 이동
+    const handleEditClick = () => {
+        let userRole = 'none';
+        if (currentProject.plUser.includes(userData.memberName)) {
+            userRole = 'plUser';
+        } else if (currentProject.devUser.includes(userData.memberName)) {
+            userRole = 'devUser';
+        } else if (currentProject.testUser.includes(userData.memberName) && currentIssue.reporter === userData.memberName) {
+            userRole = 'testUser';
+        }
+
+        if (userRole !== 'none') {
+            navigate(`/Project/${currentProject.projectTitle}/${currentIssue.issueTitle}/IssueUpdate`, {
+                state: { currentProject, currentIssue, userRole }
+            });
+        } else {
+            alert("수정 권한이 없습니다.");
+        }
+    };
 
     return (
         <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
@@ -105,11 +133,20 @@ const IssueDetail = () => {
                 <Typography variant="h4" align="center" gutterBottom>
                     {currentIssue.issueTitle}
                 </Typography>
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <StyledSpeedDial
+                    ariaLabel="menu"
+                    icon={<MoreVertIcon />}
+                    direction='down'
+                >
+                    {actions.map((action) => (
+                        <SpeedDialAction
+                            key={action.name}
+                            icon={action.icon}
+                            tooltipTitle={action.name}
+                            onClick={action.name === '수정' ? handleEditClick : null}
+                        />
+                    ))}
+                </StyledSpeedDial>
             </Box>
             <Box sx={{ marginBottom: 2 }}>
                 <Typography variant="body1" gutterBottom>
@@ -132,6 +169,9 @@ const IssueDetail = () => {
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                     Status: {currentIssue.status}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Keywords: {currentIssue.KeyWords}
                 </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />
@@ -168,7 +208,7 @@ const IssueDetail = () => {
             </TableContainer>
             {displayedRows.length < rows.length && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                    <Button onClick={handleLoadMore} variant="contained" color="primary">
+                    <Button onClick={handleLoadMore} color="success">
                         더보기
                     </Button>
                 </Box>
