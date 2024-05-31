@@ -4,9 +4,7 @@ import com.example.seproject.member.entity.MemberEntity;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class IssueForm {
     private Long id;
     private Long projectId;
