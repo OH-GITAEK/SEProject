@@ -185,15 +185,13 @@ export default function App() {
                     <Main open={open}>
                         <DrawerHeader />
                         <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row', // 가로 방향으로 설정
-                            alignItems: 'center',
+                            position: 'absolute',
                             justifyContent: 'center',
-                            flexGrow: 1,
-                            padding: theme.spacing(5),
-                            overflow: 'hidden', // 화면 밖으로 넘어가는 내용을 숨김
+                            alignItems: 'center',
+                            height: '100%', // 전체 뷰 높이에 맞추기
+                            width: '97%', // 전체 너비에 맞추기
                         }}>
-                            <Routes>
+                        <Routes>
                                 <Route path="" element={<Home />} />
                                 <Route path="/Project" element={<Project />} />
                                 <Route path="/ProjectCreate" element={<ProjectCreate />} />

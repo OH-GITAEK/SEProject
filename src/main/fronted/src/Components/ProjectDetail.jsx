@@ -86,11 +86,11 @@ const ProjectDetail = () => {
     const { currentProjectId, setCurrentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
     // 이슈 간단
     const columns = [
-        { id: 'issueTitle', label: '제목', minWidth: 170 },
-        { id: 'assignee', label: '담당자', minWidth: 170},
-        { id: 'status', label: '상태', minWidth: 170, align: 'right' },
-        { id: 'priority', label: '우선순위', minWidth: 170, align: 'right' },
-        { id: 'reporter', label: '작성자', minWidth: 170, align: 'right' }
+        { id: 'issueTitle', label: '제목', minWidth: 170, align: 'left'},
+        { id: 'assignee', label: '담당자', minWidth: 170, align: 'left'},
+        { id: 'status', label: '상태', minWidth: 170, align: 'left' },
+        { id: 'priority', label: '우선순위', minWidth: 170, align: 'left' },
+        { id: 'reporter', label: '작성자', minWidth: 170, align: 'left' }
     ];
 
     const [rows, setRows] = useState([]);

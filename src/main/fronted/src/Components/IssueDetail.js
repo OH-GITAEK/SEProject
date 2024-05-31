@@ -16,9 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const StyledTableRow = styled(TableRow)(({ }) => ({}));
-
-const StyledSpeedDial = styled(SpeedDial)(({ }) => ({
+const StyledSpeedDial = styled(SpeedDial)(({theme }) => ({
     '& .MuiSpeedDial-fab': {
         backgroundColor: '#03C75A',
         padding: 'none',
@@ -171,6 +169,9 @@ const IssueDetail = () => {
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                     Status: {currentIssue.status}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Keywords: {currentIssue.KeyWords}
                 </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />

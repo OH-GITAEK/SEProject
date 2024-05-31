@@ -22,7 +22,7 @@ function CustomTabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    {children}
                 </Box>
             )}
         </div>
@@ -42,7 +42,7 @@ function a11yProps(index) {
     };
 }
 
-function BasicTabs({ dailyData, monthlyData, topKeywords }) {
+function BasicTabs({ dailyData = [{ date: '2024-05-01', count: 1 }, { date: '2024-05-02', count: 2 }], monthlyData = [{ month: '2024-05', count: 3 }], topKeywords = [{ id: 'test', value: 10, label: 'Test' }] }) {
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
@@ -73,33 +73,39 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
                         color: '#00a152', // 선택된 탭 색상
                     },
                 }}>
-                    <Tab label="일별 이슈 발생 횟수" {...a11yProps(0)}  />
+                    <Tab label="일별 이슈 발생 횟수" {...a11yProps(0)} />
                     <Tab label="월 별 이슈 발생 횟수" {...a11yProps(1)} />
                     <Tab label="트랜드" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <LineChart
-                    xAxis={dailyChartData.xAxis}
-                    series={dailyChartData.series}
-                    width={500}
-                    height={300}
-                />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <LineChart
+                        xAxis={dailyChartData.xAxis}
+                        series={dailyChartData.series}
+                        width={500}
+                        height={300}
+                    />
+                </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <LineChart
-                    xAxis={monthlyChartData.xAxis}
-                    series={monthlyChartData.series}
-                    width={500}
-                    height={300}
-                />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <LineChart
+                        xAxis={monthlyChartData.xAxis}
+                        series={monthlyChartData.series}
+                        width={500}
+                        height={300}
+                    />
+                </Box>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <PieChart
-                    series={[{ data: topKeywords }]}
-                    width={400}
-                    height={200}
-                />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <PieChart
+                        series={[{ data: topKeywords }]}
+                        width={400}
+                        height={200}
+                    />
+                </Box>
             </CustomTabPanel>
         </Box>
     );
@@ -176,13 +182,15 @@ export default function IssueAnalysis() {
     const getTopKeywords = () => {
         const keywordCount = {};
         issues.forEach(issue => {
-            issue.keyword.forEach(keyword => {
-                if (keywordCount[keyword]) {
-                    keywordCount[keyword]++;
-                } else {
-                    keywordCount[keyword] = 1;
-                }
-            });
+            if (issue.keyword) {
+                issue.keyword.forEach(keyword => {
+                    if (keywordCount[keyword]) {
+                        keywordCount[keyword]++;
+                    } else {
+                        keywordCount[keyword] = 1;
+                    }
+                });
+            }
         });
         const sortedKeywords = Object.entries(keywordCount).sort((a, b) => b[1] - a[1]);
         return sortedKeywords.slice(0, 5).map(([keyword, count]) => ({ id: keyword, value: count, label: keyword }));
@@ -193,7 +201,8 @@ export default function IssueAnalysis() {
     const topKeywords = getTopKeywords();
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', padding: '20px', backgroundColor: '#f9f9f9' }}>
+            <Typography variant="h4" gutterBottom>Issue Analysis</Typography>
             <BasicTabs
                 dailyData={Object.entries(dailyCount).map(([date, count]) => ({ date, count }))}
                 monthlyData={Object.entries(monthlyCount).map(([month, count]) => ({ month, count }))}

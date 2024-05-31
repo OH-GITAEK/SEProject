@@ -32,7 +32,8 @@ const IssueCreate = () => {
             issueTitle: issueTitle,
             issueDescription: issueDescription,
             status: 'new',
-            priority: priority
+            priority: priority,
+            assignee: 'none'
         })
             .then(() => {
                 alert('이슈 생성이 완료되었습니다.');
