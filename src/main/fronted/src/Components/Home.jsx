@@ -57,7 +57,7 @@ const Home = () => {
                                 3.Project&Issue 관리
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                프로젝트를 만들고 발생한 이슈를 관리해보세요.
+                                프로젝트를 만들고 발생한 이슈를 관리해보세요!
                             </Typography>
                             <img
                                 src="/c.png"

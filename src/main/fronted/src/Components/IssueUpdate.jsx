@@ -38,15 +38,16 @@ const IssueUpdate = () => {
         if (userRole === 'testUser' && currentIssue.reporter === userData.memberName) {
             if (option !== 'resolved' && option !== 'reopened') return true;
         }
-        return (userRole === 'plUser' && option !== 'closed');
+        return userRole === 'plUser' && option !== 'closed';
     };
 
     // 역할에 따른 수정권한
     const tagDisabled = () => {
         return !(userRole === 'testUser' && currentIssue.reporter === userData.memberName);
     }
+
     const comboDisabled = () => {
-        return !(userRole === 'plUser');
+        return userRole !== 'plUser';
     }
 
     // 오류시 뒤로 가기
@@ -77,7 +78,7 @@ const IssueUpdate = () => {
             status: status
         })
             .then(response => {
-                if (userRole === 'plUser') {
+                if (userRole === 'plUser' && assignee !== currentIssue.assignee) {
                     axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee })
                         .catch(error => {
                             console.error('assign Error:', error);
@@ -280,7 +281,7 @@ const IssueUpdate = () => {
                         id="assignee"
                         options={recommends}
                         required
-                        disabled={comboDisabled}
+                        disabled={comboDisabled()}
                         value={assignee}
                         onChange={(event, newValue) => {
                             setAssignee(newValue);
