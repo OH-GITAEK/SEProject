@@ -146,7 +146,7 @@ const IssueDetail = () => {
     };
 
     return (
-        <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
+        <Paper sx={{ width: '100%', padding: 3, margin: 'auto', maxWidth: 1000 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                 <Typography variant="h4" align="center" gutterBottom>
                     {currentIssue.issueTitle}
@@ -214,7 +214,7 @@ const IssueDetail = () => {
                     </TableHead>
                     <TableBody>
                         {displayedRows.map((row) => (
-                            <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                            <StyledTableRow tabIndex={-1} key={row.id}>
                                 {columns.map((column) => {
                                     const value = row[column.id];
                                     return (

@@ -68,7 +68,7 @@ export default function Project() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
-    const { setCurrentProjectId } = useContext(UserContext); // UserContext로부터 변수 상속
+    const { userData, setCurrentProjectId } = useContext(UserContext); // UserContext로부터 변수 상속
     const columns = [
         { id: 'projectTitle', label: 'Title', minWidth: 170 },
         { id: 'projectDescription', label: 'Description', minWidth: 100 },
@@ -91,13 +91,15 @@ export default function Project() {
 
     /* 테이블에 project data 가져온다 */
     useEffect(() => {
-        axios.get('/api/projects')
-            .then((response) => {
-                setRows(response.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            });
+        if(Object.keys(userData).length !== 0) {
+            axios.get('/api/projects')
+                .then((response) => {
+                    setRows(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
+        }
     }, []);
 
     /* 테이블에 페이지 넘기기 */
@@ -135,7 +137,7 @@ export default function Project() {
     };
 
     return (
-        <Paper sx={{ width: '90%', margin: 'auto', overflow: 'hidden', padding: 2 }}>
+        <Paper sx={{ width: '100%', padding: 3, margin: 'auto', maxWidth: 1000 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                 <Search>
                     <SearchIconWrapper>

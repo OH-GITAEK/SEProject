@@ -37,7 +37,7 @@ export default function ProjectCreate(){
     };
 
     return (
-        <Paper sx={{ width: '90%', margin: 'auto', padding: 4 }}>
+        <Paper sx={{ width: '100%', margin: 'auto', padding: 4 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
                 <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>새 프로젝트</Typography>
                 <TextField
