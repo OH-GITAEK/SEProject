@@ -105,11 +105,11 @@ export default function App() {
                     const isLast = index === pathnames.length - 1;
                     return isLast ? (
                         <Typography color="textPrimary" key={to} sx={{ color: 'white' }}>
-                            {value}
+                            {decodeURI(value)}
                         </Typography>
                     ) : (
                         <Link underline="hover" color="inherit" key={to} sx={{ color: 'white' }} href={to}>
-                            {value}
+                            {decodeURI(value)}
                         </Link>
                     );
                 })}

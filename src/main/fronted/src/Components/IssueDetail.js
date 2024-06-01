@@ -44,7 +44,7 @@ const IssueDetail = () => {
     const [currentProject, setCurrentProject] = useState({});
     const [currentIssue, setCurrentIssue] = useState({});
     const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
+    const rowsPerPage = 5;
     const columns = [
         { id: 'memberEntity', label: '계정', minWidth: 170, align: 'left' },
         { id: 'content', label: '내용', minWidth: 170, align: 'center' },
@@ -95,7 +95,13 @@ const IssueDetail = () => {
         }
     }, [currentProject, currentIssue]);
 
-    // 새로운 댓글 작성
+    // 키워드 분리
+    const formattedKeywords = Array.isArray(currentIssue.keyWords) && currentIssue.keyWords.length !== 0
+        ? currentIssue.keyWords.map(keyword => `# ${keyword}`).join(', ')
+        : '';
+
+
+        // 새로운 댓글 작성
     const [newComment, setNewComment] = useState('');
     const handleCommentSubmit = (e) => {
         e.preventDefault();
@@ -103,8 +109,8 @@ const IssueDetail = () => {
             content: newComment
         })
             .then((response) => {
-                setRows(response.data);
                 setNewComment('');
+                navigate(0);
             })
             .catch((error) => {
                 console.log(error);
@@ -187,7 +193,7 @@ const IssueDetail = () => {
                     Status: {currentIssue.status}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    Keywords: {currentIssue.keyWords}
+                    Keywords: {formattedKeywords}
                 </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />

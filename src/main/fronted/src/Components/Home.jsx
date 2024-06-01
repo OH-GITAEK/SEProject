@@ -29,9 +29,11 @@ const Home = () => {
                             <Typography variant="body2" color="text.secondary">
                                 계정을 만들어 당신의 프로젝트들을 관리해보세요.
                             </Typography>
-                            <Button variant="contained" color="success" style={{marginTop: '1em'}}>
-                                회원가입
-                            </Button>
+                            <img
+                                src={`src/main/fronted/public/a.png`}
+                                alt="메뉴버튼"
+                                loading="lazy"
+                            />
                         </CardContent>
                     </Card>
                 </Grid>

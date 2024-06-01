@@ -94,10 +94,7 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
                     },
                     '& .MuiTab-root': {
                         color: 'rgba(0, 0, 0, 0.54)', // 기본 탭 색상
-                    },
-                    '& .Mui-selected': {
-                        color: '#009000', // 선택된 탭 색상
-                    },
+                    }
                 }}>
                     <Tab label="일 별 이슈 발생 횟수" {...a11yProps(0)} />
                     <Tab label="월 별 이슈 발생 횟수" {...a11yProps(1)} />
