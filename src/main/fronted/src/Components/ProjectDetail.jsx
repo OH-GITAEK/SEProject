@@ -1,13 +1,36 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Paper, Typography, List, Box, Button, Divider, IconButton, Tooltip, Chip, Avatar,
+    Paper, Typography, List, Box, Button, Divider, Chip, Avatar,
     Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, styled, alpha, InputBase
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { UserContext } from "./Usercontext";
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
+    '& .MuiSpeedDial-fab': {
+        backgroundColor: '#03C75A',
+        padding: 'none',
+        boxShadow: 'none',
+        '&:hover': {
+            backgroundColor: '#03C75A',
+            padding: 'none'
+        },
+    },
+}));
+
+const actions = [
+    { icon: <EditIcon />, name: '수정' },
+    { icon: <DeleteIcon />, name: '삭제' },
+    { icon: <BarChartIcon />, name: '분석' }
+];
 
 // 검색바 style
 const Search = styled('div')(({ theme }) => ({
@@ -54,21 +77,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ProjectDetail = () => {
+    sessionStorage.removeItem('currentIssueId');
     const navigate = useNavigate();
     const [currentProject, setCurrentProject] = useState({});
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const { currentProjectId, setCurrentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
+    // 이슈 간단
     const columns = [
-        { id: 'issueTitle', label: '제목', minWidth: 170 },
-        { id: 'issueDescription', label: '내용', minWidth: 100 },
-        { id: 'reportedDate', label: '생성날짜', minWidth: 170, align: 'right' },
-        { id: 'reporter', label: '생성자', minWidth: 170, align: 'right' },
+        { id: 'issueTitle', label: '제목', minWidth: 170, align: 'left'},
+        { id: 'assignee', label: '담당자', minWidth: 170, align: 'left'},
+        { id: 'status', label: '상태', minWidth: 170, align: 'left' },
+        { id: 'priority', label: '우선순위', minWidth: 170, align: 'left' },
+        { id: 'reporter', label: '작성자', minWidth: 170, align: 'left' }
     ];
 
-    const [rows, setRows] = useState([]);
+    // dial 오픈상태관리
+    const [open, setOpen] = useState(false);
 
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const [rows, setRows] = useState([]);
+    /*참조 중인 프로젝트 가져오기*/
     useEffect(() => {
         if (currentProjectId) {
             axios.get(`/api/projects/${currentProjectId}`)
@@ -112,8 +144,9 @@ const ProjectDetail = () => {
 
     const filteredRows = rows.filter(row =>
         row.issueTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.issueDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.reportedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.assignee.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.priority.toLowerCase().includes(searchQuery.toLowerCase()) ||
         row.reporter.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -123,17 +156,36 @@ const ProjectDetail = () => {
         navigate(`/Project/${currentProject.projectTitle}/${issue.issueTitle}`, { state: { currentProject, issue } });
     };
 
+    const handleActionClick = (actionName) => {
+        if (actionName === '분석') {
+            navigate(`/Project/${currentProject.projectTitle}/IssueAnalysis`);
+        }
+    };
+
     return (
         <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                 <Typography variant="h4" align="center" gutterBottom>
                     {currentProject.projectTitle}
                 </Typography>
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <StyledSpeedDial
+                    ariaLabel="menu"
+                    icon={<MoreVertIcon />}
+                    direction='down'
+                    open={open}
+                    onOpen={handleOpen}
+                    onClose={handleClose}
+                    onClick={handleOpen}
+                >
+                    {actions.map((action) => (
+                        <SpeedDialAction
+                            key={action.name}
+                            icon={action.icon}
+                            tooltipTitle={action.name}
+                            onClick={() => handleActionClick(action.name)}
+                        />
+                    ))}
+                </StyledSpeedDial>
             </Box>
             <Box sx={{ marginBottom: 2 }}>
                 <Typography variant="body1" gutterBottom>

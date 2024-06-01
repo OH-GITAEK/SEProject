@@ -62,6 +62,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function Project() {
+    sessionStorage.removeItem('currentProjectId');
+    sessionStorage.removeItem('currentIssueId');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');

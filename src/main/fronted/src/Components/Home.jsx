@@ -3,19 +3,22 @@ import React from 'react';
 import { Container, Typography, Button, Card, CardContent, Grid } from '@mui/material';
 
 const Home = () => {
+    sessionStorage.removeItem('currentProjectId');
+    sessionStorage.removeItem('currentIssueId');
     return (
         <Container>
             <Typography variant="h1" component="div" gutterBottom>
                 GETTING START
             </Typography>
             <Typography variant="h4" component="div" gutterBottom>
-                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; with Team5
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; with
+                Team5
             </Typography>
-            <br/>
+            <br/><br/>
             <Typography variant="h5" component="div" gutterBottom>
                 당신의 프로젝트와 이슈를 효율적으로 관리해보세요!
             </Typography>
-            <br/>
+            <br/><br/><br/>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} md={4}>
                     <Card>

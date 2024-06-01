@@ -1,35 +1,36 @@
-import {Route, Routes, useLocation} from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import Divider from '@mui/material/Divider';
 import React from "react";
 import Project from "./Components/Project";
-import {UserProvider} from "./Components/Usercontext";
+import { UserProvider } from "./Components/Usercontext";
 import ProjectCreate from "./Components/ProjectCreate";
 import ProjectDetail from "./Components/ProjectDetail";
 import IssueCreate from "./Components/IssueCreate";
 import Login from "./Components/Login.js";
 import IssueDetail from "./Components/IssueDetail";
 import Home from "./Components/Home";
+import IssueUpdate from "./Components/IssueUpdate";
+import IssueAnalysis from "./Components/IssueAnalysis";
 
 const drawerWidth = 350;
 
@@ -119,98 +120,91 @@ export default function App() {
     return (
         <div className="App">
             <UserProvider>
-            <Box sx={{ display: 'flex' }}>
-                <CssBaseline />
-                <AppBar position="fixed" open={open}>
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Box sx={{ flexGrow: 1 }}>
-                            {renderBreadcrumbs()}
-                        </Box>
-                        <Typography variant="h6" noWrap component="div">
-                            Team 5
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
+                <Box sx={{ display: 'flex' }}>
+                    <CssBaseline />
+                    <AppBar position="fixed" open={open}>
+                        <Toolbar>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                edge="start"
+                                sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <Box sx={{ flexGrow: 1 }}>
+                                {renderBreadcrumbs()}
+                            </Box>
+                            <Typography variant="h6" noWrap component="div">
+                                Team 5
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer
+                        sx={{
                             width: drawerWidth,
-                            boxSizing: 'border-box',
-                            backgroundColor: '#f5f5f5', // 연한 회색 배경색
-                        },
-                    }}
-                    variant="persistent"
-                    anchor="left"
-                    open={open}
-                >
-                    <DrawerHeader>
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                        </IconButton>
-                    </DrawerHeader>
-                    <Divider />
+                            flexShrink: 0,
+                            '& .MuiDrawer-paper': {
+                                width: drawerWidth,
+                                boxSizing: 'border-box',
+                                backgroundColor: '#f5f5f5', // 연한 회색 배경색
+                            },
+                        }}
+                        variant="persistent"
+                        anchor="left"
+                        open={open}
+                    >
+                        <DrawerHeader>
+                            <IconButton onClick={handleDrawerClose}>
+                                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            </IconButton>
+                        </DrawerHeader>
+                        <Divider />
                         <Login />
-                    <Divider />
-                    <List>
+                        <Divider />
+                        <List>
                             <ListItem key='홈' disablePadding>
                                 <ListItemButton href={''}>
                                     <ListItemIcon>
-                                        <HomeIcon/>
+                                        <HomeIcon />
                                     </ListItemIcon>
                                     <ListItemText primary='홈' />
                                 </ListItemButton>
                             </ListItem>
-                        <ListItem key='프로젝트' disablePadding>
-                            <ListItemButton href={'/Project'}>
-                                <ListItemIcon>
-                                    <DesktopWindowsIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary='프로젝트' />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem key='계정' disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <AccountCircleIcon />
-                                </ListItemIcon>
-                                <ListItemText primary='계정' />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                </Drawer>
-                <Main open={open}>
-                    <DrawerHeader />
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexGrow: 1,
-                        padding: theme.spacing(5),
-                    }}>
-                            <Routes>
-                                <Route path="" element={<Home/>} />
-                                <Route path="/Project" element={<Project/>} />
-                                <Route path="/ProjectCreate" element={<ProjectCreate/>} />
+                            <ListItem key='프로젝트' disablePadding>
+                                <ListItemButton href={'/Project'}>
+                                    <ListItemIcon>
+                                        <DesktopWindowsIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary='프로젝트' />
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    </Drawer>
+                    <Main open={open}>
+                        <DrawerHeader />
+                        <Box sx={{
+                            position: 'absolute',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100%', // 전체 뷰 높이에 맞추기
+                            width: '97%', // 전체 너비에 맞추기
+                        }}>
+                        <Routes>
+                                <Route path="" element={<Home />} />
+                                <Route path="/Project" element={<Project />} />
+                                <Route path="/ProjectCreate" element={<ProjectCreate />} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
+                                <Route path="/Project/:projectTitle/IssueAnalysis" element={<IssueAnalysis />} />
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />
-                                <Route path="/Project/:projectTitle/:issueTitle" element={<IssueDetail/>} />
+                                <Route path="/Project/:projectTitle/:issueTitle" element={<IssueDetail />} />
+                                <Route path="/Project/:projectTitle/:issueTitle/IssueUpdate" element={<IssueUpdate />} />
                             </Routes>
-                    </Box>
-                </Main>
-            </Box>
-        </UserProvider>
+                        </Box>
+                    </Main>
+                </Box>
+            </UserProvider>
         </div>
     );
 }
