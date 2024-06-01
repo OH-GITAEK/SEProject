@@ -118,7 +118,7 @@ export default function Signup() {
                         ),
                     }}
                 />
-                <Button type="submit" variant="contained" sx={{
+                <Button type="submit" variant="contained" fullWidth margin='normal' sx={{
                     backgroundColor: '#03C75A', // 네이버 초록색
                     '&:hover': {
                         backgroundColor: '#03C75A', // 네이버 초록색 호버

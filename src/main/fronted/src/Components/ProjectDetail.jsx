@@ -93,6 +93,12 @@ const ProjectDetail = () => {
         { id: 'reporter', label: '작성자', minWidth: 170, align: 'left' }
     ];
 
+    // dial 오픈상태관리
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     const [rows, setRows] = useState([]);
     /*참조 중인 프로젝트 가져오기*/
     useEffect(() => {
@@ -166,6 +172,10 @@ const ProjectDetail = () => {
                     ariaLabel="menu"
                     icon={<MoreVertIcon />}
                     direction='down'
+                    open={open}
+                    onOpen={handleOpen}
+                    onClose={handleClose}
+                    onClick={handleOpen}
                 >
                     {actions.map((action) => (
                         <SpeedDialAction

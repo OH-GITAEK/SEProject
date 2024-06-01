@@ -16,7 +16,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const StyledSpeedDial = styled(SpeedDial)(({theme }) => ({
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+}));
+
+const StyledSpeedDial = styled(SpeedDial)(({theme}) => ({
     '& .MuiSpeedDial-fab': {
         backgroundColor: '#03C75A',
         padding: 'none',
@@ -45,6 +51,12 @@ const IssueDetail = () => {
         { id: 'reportedDate', label: '날짜', minWidth: 170, align: 'right' }
     ];
     const { userData, currentProjectId, currentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
+
+    // dial 오픈상태관리
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const [rows, setRows] = useState([]);
 
@@ -136,14 +148,18 @@ const IssueDetail = () => {
                 <StyledSpeedDial
                     ariaLabel="menu"
                     icon={<MoreVertIcon />}
-                    direction='down'
+                    direction="down"
+                    open={open}
+                    onOpen={handleOpen}
+                    onClose={handleClose}
+                    onClick={handleOpen}
                 >
                     {actions.map((action) => (
                         <SpeedDialAction
                             key={action.name}
                             icon={action.icon}
                             tooltipTitle={action.name}
-                            onClick={action.name === '수정' ? handleEditClick : null}
+                            onClick={(event) => handleEditClick(event, action.name)}
                         />
                     ))}
                 </StyledSpeedDial>
@@ -171,7 +187,7 @@ const IssueDetail = () => {
                     Status: {currentIssue.status}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    Keywords: {currentIssue.KeyWords}
+                    Keywords: {currentIssue.keyWords}
                 </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />

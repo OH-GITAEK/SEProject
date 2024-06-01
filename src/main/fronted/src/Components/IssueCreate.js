@@ -17,7 +17,6 @@ const options = [
     "기술 문서 참조", "협업 툴 사용", "기타"
 ];
 
-
 const IssueCreate = () => {
     const location = useLocation();
     const [issueTitle, setIssueTitle] = useState('');
@@ -31,9 +30,9 @@ const IssueCreate = () => {
         axios.post(`/api/projects/${currentProject.id}/issues/create`, {
             issueTitle: issueTitle,
             issueDescription: issueDescription,
-            status: 'new',
             priority: priority,
-            assignee: 'none'
+            status: "",
+            keyWords: keyword
         })
             .then(() => {
                 alert('이슈 생성이 완료되었습니다.');
@@ -99,10 +98,9 @@ const IssueCreate = () => {
                     }}
                     freeSolo
                     renderTags={(value, getTagProps) =>
-                        value.map((option, index) => {
-                            const tagProps = getTagProps({ index });
-                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
-                        })
+                        value.map((option, index) => (
+                            <Chip key={index} variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
                     }
                     renderInput={(params) => (
                         <TextField
@@ -124,13 +122,13 @@ const IssueCreate = () => {
                 />
                 <Autocomplete
                     id="priority"
-                    options={["blocker","critical","major","minor","trivial"]}
+                    options={["blocker", "critical", "major", "minor", "trivial"]}
                     required
                     value={priority}
                     onChange={(event, newValue) => {
                         setPriority(newValue);
                     }}
-                    sx={{width: '25%'}}
+                    sx={{ width: '25%' }}
                     margin="normal"
                     disablePortal
                     renderInput={(params) => (
@@ -143,8 +141,11 @@ const IssueCreate = () => {
                                     '&.Mui-focused fieldset': {
                                         borderColor: '#03C75A', // 포커스 시 테두리 색상
                                     },
+                                    '&:hover fieldset': {
+                                        borderColor: '#03C75A', // hover 시 테두리 색상
+                                    },
                                 },
-                                width: '300'
+                                width: '150px'
                             }}
                             label="우선순위"
                             required
@@ -152,7 +153,8 @@ const IssueCreate = () => {
                         />
                     )}
                 />
-                <Button variant="contained" onClick={handleCreate} sx={{ mt: 3,
+                <Button variant="contained" onClick={handleCreate} sx={{
+                    mt: 3,
                     backgroundColor: '#03C75A', // 네이버 초록색
                     '&:hover': {
                         backgroundColor: '#03C75A', // 네이버 초록색 호버

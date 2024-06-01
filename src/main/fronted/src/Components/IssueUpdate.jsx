@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Paper, Typography, Box, Button, TextField, Autocomplete } from '@mui/material';
 import axios from 'axios';
 import Chip from "@mui/material/Chip";
+import { UserContext } from "./Usercontext";
 
 // 키워드 목록
 const options = [
@@ -16,58 +17,72 @@ const IssueUpdate = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { currentProject, currentIssue, userRole } = location.state || { currentProject: {}, currentIssue: {}, userRole: '' }; // location.state로부터 currentProject, currentIssue, userRole 가져옴
+    const { userData } = useContext(UserContext);
 
-    // 이슈 업데이트 상태 관리
+    // 이슈 업데이트 상태 관리 변수
     const [issueTitle, setIssueTitle] = useState(currentIssue.issueTitle || '');
     const [issueDescription, setIssueDescription] = useState(currentIssue.issueDescription || '');
-    const [keyword, setKeyword] = useState(currentIssue.keyword || []);
+    const [keyword, setKeyword] = useState(currentIssue.keyWords || []);
     const [priority, setPriority] = useState(currentIssue.priority || '');
     const [status, setStatus] = useState(currentIssue.status || '');
     const [assignee, setAssignee] = useState(currentIssue.assignee || '');
     const [comment, setComment] = useState('');
 
+    const [recommends, setRecommends] = useState(currentProject.devUser || []); // 기본 개발자 추천버튼 누르면 추천인으로 변경
     const statusOptions = ['new', 'open', 'in-progress', 'fixed', 'resolved', 'closed', 'reopened'];
 
-    // 역할에 따른 비활성화 상태 설정
+    // 역할에 따른 option 비활성화 상태 설정
     const isOptionDisabled = (option) => {
         if (option === 'new') return true;
         if (userRole === 'devUser' && option !== 'fixed') return true;
-        if (userRole === 'testUser' && currentIssue.reporter === 'testUser') {
+        if (userRole === 'testUser' && currentIssue.reporter === userData.memberName) {
             if (option !== 'resolved' && option !== 'reopened') return true;
         }
-        if (userRole === 'plUser' && option !== 'closed') return true;
-        return false;
+        return (userRole === 'plUser' && option !== 'closed');
     };
+
+    // 역할에 따른 수정권한
+    const tagDisabled = () => {
+        return !(userRole === 'testUser' && currentIssue.reporter === userData.memberName);
+    }
+    const comboDisabled = () => {
+        return !(userRole === 'plUser');
+    }
 
     // 오류시 뒤로 가기
     if (!currentIssue.issueTitle) {
         alert("다시 시도하세요!");
-        navigate('/Project');
+        navigate(`/Project/${currentProject.projectTitle}`);
     }
 
-    // 개발자 추천 (미구현)
+    // 개발자 추천
     const recommendDeveloper = () => {
-        alert('미구현');
-        // axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommendDeveloper`)
-        //     .then(response => {
-        //         setAssignee(response.data.recommendedDeveloper);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error recommending developer:', error);
-        //     });
+        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`, { keyword })
+            .then(response => {
+                setRecommends(response.data.devUser);
+            })
+            .catch(error => {
+                console.error('Error recommending developer:', error);
+            });
     };
 
     // 이슈 업데이트
     const handleUpdate = (e) => {
         e.preventDefault();
         axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update`, {
-            issueTitle,
-            issueDescription,
-            keyword,
-            priority,
-            status
+            issueTitle: issueTitle,
+            issueDescription: issueDescription,
+            keyWords: keyword,
+            priority: priority,
+            status: status
         })
             .then(response => {
+                if (userRole === 'plUser') {
+                    axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee })
+                        .catch(error => {
+                            console.error('assign Error:', error);
+                        })
+                }
                 if (comment) {
                     axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/comments/create`, {
                         content: comment
@@ -120,17 +135,18 @@ const IssueUpdate = () => {
     return (
         <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
             <Typography variant="h4" gutterBottom>
-                이슈 업데이트
+                이슈 수정
             </Typography>
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleUpdate}>
+            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} onSubmit={handleUpdate}>
                 <TextField
                     label="이슈 제목"
                     name="issueTitle"
-                    color = 'success'
+                    color='success'
                     value={issueTitle}
                     onChange={handleInputChange}
                     margin="normal"
                     fullWidth
+                    disabled={tagDisabled()}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '&.Mui-focused fieldset': {
@@ -145,13 +161,14 @@ const IssueUpdate = () => {
                 <TextField
                     label="이슈 내용"
                     name="issueDescription"
-                    color = 'success'
+                    color='success'
                     value={issueDescription}
                     onChange={handleInputChange}
                     margin="normal"
                     fullWidth
                     multiline
-                    rows={4}
+                    rows={6}
+                    disabled={tagDisabled()}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '&.Mui-focused fieldset': {
@@ -175,11 +192,12 @@ const IssueUpdate = () => {
                         setKeyword(newValue);
                     }}
                     freeSolo
+                    disabled={tagDisabled()}
+                    isOptionEqualToValue={(option, value) => option === value || value === "" || option === ""}
                     renderTags={(value, getTagProps) =>
-                        value.map((option, index) => {
-                            const tagProps = getTagProps({ index });
-                            return <Chip key={index} variant="outlined" label={option} {...tagProps} />;
-                        })
+                        value.map((option, index) => (
+                            <Chip key={index} variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
                     }
                     renderInput={(params) => (
                         <TextField
@@ -194,34 +212,46 @@ const IssueUpdate = () => {
                                 },
                             }}
                             label="키워드"
-                            required
                             margin="normal"
                         />
                     )}
                 />
-                <TextField
-                    label="우선순위"
-                    name="priority"
-                    color = 'success'
+                <Autocomplete
+                    id="priority"
+                    options={["blocker", "critical", "major", "minor", "trivial"]}
+                    required
+                    disabled={tagDisabled()}
                     value={priority}
-                    onChange={handleInputChange}
-                    margin="normal"
-                    fullWidth
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#03C75A', // 포커스 시 테두리 색상
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: '#03C75A', // 기본 레이블 색상
-                            },
-                        },
+                    onChange={(event, newValue) => {
+                        setPriority(newValue);
                     }}
+                    sx={{ width: '25%', alignSelf: 'start' }}
+                    margin="normal"
+                    disablePortal
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            color="success"
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: '#03C75A', // hover 시 테두리 색상
+                                    },
+                                },
+                            }}
+                            label="우선순위"
+                            margin="normal"
+                        />
+                    )}
                 />
                 <Autocomplete
                     options={statusOptions}
                     value={status}
-                    color = 'success'
+                    sx={{ width: '25%', alignSelf: 'start' }}
                     onChange={handleStatusChange}
                     getOptionDisabled={isOptionDisabled}
                     renderInput={(params) => (
@@ -230,6 +260,7 @@ const IssueUpdate = () => {
                             label="상태"
                             margin="normal"
                             fullWidth
+                            color='success'
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     '&.Mui-focused fieldset': {
@@ -243,47 +274,69 @@ const IssueUpdate = () => {
                         />
                     )}
                 />
-                {userRole === 'plUser' && (
-                    <>
-                        <Button onClick={recommendDeveloper} sx={{
-                            marginTop: 2,
-                            backgroundColor: '#03C75A', // 네이버 초록색
-                            '&:hover': {
-                                backgroundColor: '#03C75A', // 네이버 초록색 호버
-                            },
-                        }}>
-                            적절한 개발자 추천
-                        </Button>
-                        <TextField
-                            label="담당자"
-                            color = 'success'
-                            name="assignee"
-                            value={assignee}
-                            onChange={(e) => setAssignee(e.target.value)}
-                            margin="normal"
-                            fullWidth
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#03C75A', // 포커스 시 테두리 색상
+
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <Autocomplete
+                        id="assignee"
+                        options={recommends}
+                        required
+                        disabled={comboDisabled}
+                        value={assignee}
+                        onChange={(event, newValue) => {
+                            setAssignee(newValue);
+                        }}
+                        sx={{ width: '25%' }}
+                        margin="normal"
+                        disablePortal
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                color="success"
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: '#03C75A', // 포커스 시 테두리 색상
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: '#03C75A', // hover 시 테두리 색상
+                                        },
                                     },
-                                    '& .MuiInputLabel-root': {
-                                        color: '#03C75A', // 기본 레이블 색상
+                                }}
+                                label="담당자"
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    {userRole === 'plUser' && (
+                        <>
+                            <Button
+                                onClick={recommendDeveloper}
+                                variant="contained"
+                                sx={{
+                                    ml: 2,
+                                    mt: 1,
+                                    backgroundColor: '#03C75A', // 네이버 초록색
+                                    '&:hover': {
+                                        backgroundColor: '#03C75A', // 네이버 초록색 호버
                                     },
-                                },
-                            }}
-                        />
-                    </>
-                )}
+                                }}
+                            >
+                                추천
+                            </Button>
+                        </>
+                    )}
+                </Box>
                 <TextField
                     label="코멘트"
+                    color="success"
                     name="comment"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     margin="normal"
                     fullWidth
                     multiline
-                    rows={4}
+                    rows={2}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '&.Mui-focused fieldset': {
@@ -295,10 +348,12 @@ const IssueUpdate = () => {
                         },
                     }}
                 />
-                <Button type="submit" variant="contained" sx={{ marginTop: 2, backgroundColor: '#03C75A', // 네이버 초록색
+                <Button type="submit" variant="contained" sx={{
+                    mt: 3, marginTop: 2, backgroundColor: '#03C75A', // 네이버 초록색
                     '&:hover': {
                         backgroundColor: '#03C75A', // 네이버 초록색 호버
-                    }, }}>
+                    },
+                }}>
                     완료
                 </Button>
             </Box>
