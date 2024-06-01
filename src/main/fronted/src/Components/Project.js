@@ -114,7 +114,7 @@ export default function Project() {
 
     /* 프로젝트 생성 */
     const handleCreateProject = () => {
-        navigate('/ProjectCreate');
+        navigate('/Project/ProjectCreate');
     };
 
     /* 검색 처리 */

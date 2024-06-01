@@ -44,7 +44,7 @@ function a11yProps(index) {
     };
 }
 
-// 기본 색상 배열 (파스텔톤)
+// 차트 파스텔톤
 const pastelColors = [
     '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF',
     '#E1BAFF', '#FFBAE1', '#FFBACD', '#B3E2FF', '#BAFFFD'
@@ -88,14 +88,7 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" color='success' sx={{
-                    '& .MuiTabs-indicator': {
-                        backgroundColor: '#03C75A',
-                    },
-                    '& .MuiTab-root': {
-                        color: 'rgba(0, 0, 0, 0.54)', // 기본 탭 색상
-                    }
-                }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="일 별 이슈 발생 횟수" {...a11yProps(0)} />
                     <Tab label="월 별 이슈 발생 횟수" {...a11yProps(1)} />
                     <Tab label="트랜드" {...a11yProps(2)} />
@@ -105,8 +98,12 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <BarChart
                         dataset={effectiveDailyData}
-                        xAxis={[{ scaleType: 'band', dataKey: 'date'}]}
-                        series={[{ dataKey: 'count', valueFormatter }]}
+                        xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
+                        series={[{
+                            dataKey: 'count',
+                            valueFormatter,
+                            color: '#BAFFC9FF'
+                        }]}
                         width={700}
                         height={500}
                     />
@@ -117,7 +114,11 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
                     <BarChart
                         dataset={effectiveMonthlyData}
                         xAxis={[{ scaleType: 'band', dataKey: 'date'}]}
-                        series={[{ dataKey: 'count', valueFormatter }]}
+                        series={[{
+                            dataKey: 'count',
+                            valueFormatter,
+                            color: '#bae7ff'
+                        }]}
                         width={700}
                         height={500}
                     />
@@ -129,8 +130,8 @@ function BasicTabs({ dailyData, monthlyData, topKeywords }) {
                         series={[
                             { data: effectiveTopKeywords.map((item, index) => ({ ...item, color: pastelColors[index % pastelColors.length] })) }
                         ]}
-                        width={600}
-                        height={350}
+                        width={800}
+                        height={500}
                     />
                 </Box>
             </CustomTabPanel>

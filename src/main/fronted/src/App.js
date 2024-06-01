@@ -194,7 +194,7 @@ export default function App() {
                         <Routes>
                                 <Route path="" element={<Home />} />
                                 <Route path="/Project" element={<Project />} />
-                                <Route path="/ProjectCreate" element={<ProjectCreate />} />
+                                <Route path="/Project/ProjectCreate" element={<ProjectCreate />} />
                                 <Route path="/Project/:projectTitle" element={<ProjectDetail />} />
                                 <Route path="/Project/:projectTitle/IssueAnalysis" element={<IssueAnalysis />} />
                                 <Route path="/Project/:projectTitle/IssueCreate" element={<IssueCreate />} />

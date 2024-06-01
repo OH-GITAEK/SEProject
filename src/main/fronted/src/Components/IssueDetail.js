@@ -230,7 +230,7 @@ const IssueDetail = () => {
             </TableContainer>
             {displayedRows.length < rows.length && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                    <Button onClick={handleLoadMore} color="success">
+                    <Button onClick={handleLoadMore}>
                         더보기
                     </Button>
                 </Box>
