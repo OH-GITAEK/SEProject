@@ -20,6 +20,7 @@ import java.awt.*;
 @SpringBootApplication
 public class SeProjectApplication {
     public static void main(String[] args) {
+        System.setProperty("java.awt.headless", "false");
         SpringApplication.run(SeProjectApplication.class, args);
     }
 

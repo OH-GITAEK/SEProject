@@ -2,6 +2,7 @@ package com.example.seproject.gui;
 
 import com.example.seproject.comment.CommentForm;
 import com.example.seproject.comment.CommentService;
+import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.member.service.MemberService;
 
 import javax.swing.*;
@@ -80,20 +81,25 @@ public class CommentPanel extends JPanel {
     }
 
     private void createComment() {
+        MemberDTO currentUser = AppState.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
+            return;
+        }
+
         String issueIdStr = JOptionPane.showInputDialog("Enter Issue ID:");
         if (issueIdStr != null && !issueIdStr.isEmpty()) {
             try {
                 Long issueId = Long.parseLong(issueIdStr);
 
                 String content = JOptionPane.showInputDialog("Enter Comment Content:");
-                String memberName = JOptionPane.showInputDialog("Enter Your Name:");
 
-                if (content != null && memberName != null) {
+                if (content != null) {
                     CommentForm commentForm = CommentForm.builder()
                             .content(content)
                             .build();
 
-                    commentService.create(issueId, commentForm, memberName);
+                    commentService.create(issueId, commentForm, currentUser.getMemberName()); // 로그인된 사용자 이름 사용
                     JOptionPane.showMessageDialog(null, "댓글 생성 성공");
                     updateCommentTable(issueId);
                 }
@@ -102,6 +108,7 @@ public class CommentPanel extends JPanel {
             }
         }
     }
+
 
     private void updateCommentTable(Long issueId) {
         commentTableModel.setRowCount(0); // 기존 데이터를 모두 지움
