@@ -65,7 +65,7 @@ export default function Project() {
     sessionStorage.removeItem('currentProjectId');
     sessionStorage.removeItem('currentIssueId');
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
     const { userData, setCurrentProjectId } = useContext(UserContext); // UserContext로부터 변수 상속
