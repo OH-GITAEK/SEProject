@@ -81,7 +81,7 @@ const ProjectDetail = () => {
     const navigate = useNavigate();
     const [currentProject, setCurrentProject] = useState({});
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
     const { currentProjectId, setCurrentIssueId } = useContext(UserContext); // UserContext로부터 변수 상속
     // 이슈 간단
