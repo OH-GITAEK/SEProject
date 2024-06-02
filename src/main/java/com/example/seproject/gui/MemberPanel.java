@@ -138,11 +138,13 @@ public class MemberPanel extends JPanel {
             MemberDTO loginResult = memberService.login(memberDTO);
             if (loginResult != null) {
                 JOptionPane.showMessageDialog(null, "로그인 성공: " + loginResult.getMemberName() + "님 환영합니다.");
+                AppState.getInstance().setCurrentUser(loginResult); // 로그인된 사용자 정보 저장
             } else {
                 JOptionPane.showMessageDialog(null, "로그인 실패: 이메일 또는 비밀번호를 확인하세요.");
             }
         }
     }
+
 
     private void updateMemberTable() {
         memberTableModel.setRowCount(0); // 기존 데이터를 모두 지움

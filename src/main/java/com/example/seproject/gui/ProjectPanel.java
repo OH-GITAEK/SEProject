@@ -1,5 +1,6 @@
 package com.example.seproject.gui;
 
+import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.member.entity.MemberEntity;
 import com.example.seproject.member.service.MemberService;
 import com.example.seproject.project.Project;
@@ -77,11 +78,17 @@ public class ProjectPanel extends JPanel {
     }
 
     private void createProject() {
+        MemberDTO currentUser = AppState.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
+            return;
+        }
+
         String projectTitle = JOptionPane.showInputDialog("Enter Project Title:");
         String projectDescription = JOptionPane.showInputDialog("Enter Project Description:");
-        String adminName = JOptionPane.showInputDialog("Enter Admin Name:");
 
-        MemberEntity admin = memberService.findByMemberName(adminName);  // 관리자 이름을 통해 MemberEntity 검색
+        // 현재 로그인된 사용자 정보를 통해 MemberEntity 검색
+        MemberEntity admin = memberService.findByMemberName(currentUser.getMemberName());
 
         // PL, DEV, TEST 사용자 목록을 쉼표로 구분하여 입력받아 처리
         List<MemberEntity> plUser = getUserEntitiesFromInput("Enter PL User Names (comma separated):");
@@ -103,6 +110,7 @@ public class ProjectPanel extends JPanel {
             updateProjectTable();
         }
     }
+
 
     private List<MemberEntity> getUserEntitiesFromInput(String message) {
         String userInput = JOptionPane.showInputDialog(message);

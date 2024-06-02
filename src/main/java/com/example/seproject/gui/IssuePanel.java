@@ -2,6 +2,7 @@ package com.example.seproject.gui;
 
 import com.example.seproject.issue.IssueForm;
 import com.example.seproject.issue.IssueService;
+import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.member.service.MemberService;
 import com.example.seproject.project.ProjectService;
 
@@ -9,9 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class IssuePanel extends JPanel {
     private final IssueService issueService;
@@ -26,6 +25,15 @@ public class IssuePanel extends JPanel {
         this.projectService = projectService;
         this.memberService = memberService;
         setLayout(null);
+
+        JLabel currentUserLabel = new JLabel();
+        currentUserLabel.setBounds(50, 10, 400, 30);
+        add(currentUserLabel);
+
+        MemberDTO currentUser = AppState.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            currentUserLabel.setText("Current User: " + currentUser.getMemberName());
+        }
 
         JButton createIssueButton = new JButton("이슈 생성");
         createIssueButton.setBounds(50, 50, 400, 30);
@@ -42,14 +50,6 @@ public class IssuePanel extends JPanel {
         JButton updateDevButton = new JButton("개발자 지정");
         updateDevButton.setBounds(50, 200, 400, 30);
         add(updateDevButton);
-
-        JButton updateIssueButton = new JButton("이슈 업데이트");
-        updateIssueButton.setBounds(50, 250, 400, 30);
-        add(updateIssueButton);
-
-        JButton recommendDevButton = new JButton("개발자 추천");
-        recommendDevButton.setBounds(50, 300, 400, 30);
-        add(recommendDevButton);
 
         createIssueButton.addActionListener(new ActionListener() {
             @Override
@@ -95,22 +95,8 @@ public class IssuePanel extends JPanel {
             }
         });
 
-        updateIssueButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateIssue();
-            }
-        });
-
-        recommendDevButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                recommendDevUser();
-            }
-        });
-
         // 이슈 테이블
-        issueTableModel = new DefaultTableModel(new Object[]{"ID", "Title", "Description", "Reporter", "Assignee", "Status", "Keywords"}, 0);
+        issueTableModel = new DefaultTableModel(new Object[]{"ID", "Title", "Description", "Reporter", "Assignee", "Status"}, 0);
         issueTable = new JTable(issueTableModel);
         JScrollPane scrollPane = new JScrollPane(issueTable);
         scrollPane.setBounds(500, 50, 800, 300);
@@ -118,6 +104,12 @@ public class IssuePanel extends JPanel {
     }
 
     private void createIssue() {
+        MemberDTO currentUser = AppState.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
+            return;
+        }
+
         String projectIdStr = JOptionPane.showInputDialog("Enter Project ID:");
         if (projectIdStr != null && !projectIdStr.isEmpty()) {
             try {
@@ -125,16 +117,12 @@ public class IssuePanel extends JPanel {
 
                 String issueTitle = JOptionPane.showInputDialog("Enter Issue Title:");
                 String issueDescription = JOptionPane.showInputDialog("Enter Issue Description:");
-                String reporterName = JOptionPane.showInputDialog("Enter Reporter Name:");
-                String keyWords = JOptionPane.showInputDialog("Enter Keywords (comma-separated):");
 
-                if (issueTitle != null && issueDescription != null && reporterName != null && keyWords != null) {
-                    List<String> keyWordsList = Arrays.asList(keyWords.split(","));
+                if (issueTitle != null && issueDescription != null) {
                     IssueForm issueForm = IssueForm.builder()
                             .issueTitle(issueTitle)
                             .issueDescription(issueDescription)
-                            .reporter(reporterName)
-                            .keyWords(keyWordsList)
+                            .reporter(currentUser.getMemberName()) // 현재 로그인된 사용자 정보 사용
                             .build();
 
                     issueService.create(projectId, issueForm);
@@ -147,61 +135,37 @@ public class IssuePanel extends JPanel {
         }
     }
 
-    private void updateIssue() {
+    private void updateDev() {
+        MemberDTO currentUser = AppState.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "로그인이 필요합니다.");
+            return;
+        }
+
         String projectIdStr = JOptionPane.showInputDialog("Enter Project ID:");
         if (projectIdStr != null && !projectIdStr.isEmpty()) {
             try {
                 Long projectId = Long.parseLong(projectIdStr);
 
                 String issueIdStr = JOptionPane.showInputDialog("Enter Issue ID:");
-                if (issueIdStr != null && !issueIdStr.isEmpty()) {
+
+                String assigneeName = JOptionPane.showInputDialog("Enter Assignee Name:");
+
+                if (issueIdStr != null && !issueIdStr.isEmpty() && assigneeName != null) {
                     try {
                         Long issueId = Long.parseLong(issueIdStr);
 
-                        String issueTitle = JOptionPane.showInputDialog("Enter Issue Title:");
-                        String issueDescription = JOptionPane.showInputDialog("Enter Issue Description:");
-                        String keyWords = JOptionPane.showInputDialog("Enter Keywords (comma-separated):");
+                        String memName = currentUser.getMemberName();
+                        IssueForm issueForm = IssueForm.builder()
+                                .assignee(assigneeName)
+                                .build();
 
-                        if (issueTitle != null && issueDescription != null && keyWords != null) {
-                            List<String> keyWordsList = Arrays.asList(keyWords.split(","));
-                            IssueForm issueForm = IssueForm.builder()
-                                    .issueTitle(issueTitle)
-                                    .issueDescription(issueDescription)
-                                    .keyWords(keyWordsList)
-                                    .build();
-
-                            issueService.update(projectId, issueId, issueForm);
-                            JOptionPane.showMessageDialog(null, "이슈 업데이트 성공");
-                            updateIssueTable(projectId);
-                        }
+                        issueService.updateDev(projectId, issueId, issueForm, memName);
+                        JOptionPane.showMessageDialog(null, "개발자 지정 성공");
+                        updateIssueTable(projectId);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(null, "Invalid Issue ID format");
                     }
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Invalid Project ID format");
-            }
-        }
-    }
-
-    private void recommendDevUser() {
-        String projectIdStr = JOptionPane.showInputDialog("Enter Project ID:");
-        if (projectIdStr != null && !projectIdStr.isEmpty()) {
-            try {
-                Long projectId = Long.parseLong(projectIdStr);
-
-                String keyWords = JOptionPane.showInputDialog("Enter Keywords (comma-separated):");
-                if (keyWords != null && !keyWords.isEmpty()) {
-                    List<String> keyWordsList = Arrays.asList(keyWords.split(","));
-                    List<String> recommendedDevelopers = issueService.recommendDevUsers(projectId, keyWordsList).stream()
-                            .map(memberEntity -> memberEntity.getMemberName())
-                            .collect(Collectors.toList());
-
-                    StringBuilder sb = new StringBuilder("Recommended Developers:\n");
-                    for (String dev : recommendedDevelopers) {
-                        sb.append(dev).append("\n");
-                    }
-                    JOptionPane.showMessageDialog(this, sb.toString());
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Invalid Project ID format");
@@ -219,8 +183,7 @@ public class IssuePanel extends JPanel {
                     issue.getIssueDescription(),
                     issue.getReporter(),
                     issue.getAssignee(),
-                    issue.getStatus(),
-                    String.join(", ", issue.getKeyWords()) // 키워드 추가
+                    issue.getStatus()
             });
         }
     }
@@ -234,41 +197,9 @@ public class IssuePanel extends JPanel {
                     + "Reporter: " + issueForm.getReporter() + "\n"
                     + "Fixer: " + issueForm.getFixer() + "\n"
                     + "Assignee: " + issueForm.getAssignee() + "\n"
-                    + "Status: " + issueForm.getStatus() + "\n"
-                    + "Keywords: " + String.join(", ", issueForm.getKeyWords())); // 키워드 추가
+                    + "Status: " + issueForm.getStatus());
         } else {
             JOptionPane.showMessageDialog(null, "Issue not found");
-        }
-    }
-
-    private void updateDev() {
-        String projectIdStr = JOptionPane.showInputDialog("Enter Project ID:");
-        if (projectIdStr != null && !projectIdStr.isEmpty()) {
-            try {
-                Long projectId = Long.parseLong(projectIdStr);
-
-                String issueIdStr = JOptionPane.showInputDialog("Enter Issue ID:");
-                if (issueIdStr != null && !issueIdStr.isEmpty()) {
-                    try {
-                        Long issueId = Long.parseLong(issueIdStr);
-
-                        String assigneeName = JOptionPane.showInputDialog("Enter Assignee Name:");
-                        if (assigneeName != null) {
-                            IssueForm issueForm = IssueForm.builder()
-                                    .assignee(assigneeName)
-                                    .build();
-
-                            issueService.updateDev(projectId, issueId, issueForm, assigneeName);
-                            JOptionPane.showMessageDialog(null, "개발자 지정 성공");
-                            updateIssueTable(projectId);
-                        }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "Invalid Issue ID format");
-                    }
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Invalid Project ID format");
-            }
         }
     }
 }
