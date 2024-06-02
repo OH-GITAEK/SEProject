@@ -22,13 +22,13 @@ const IssueUpdate = () => {
     // 이슈 업데이트 상태 관리 변수
     const [issueTitle, setIssueTitle] = useState(currentIssue.issueTitle || '');
     const [issueDescription, setIssueDescription] = useState(currentIssue.issueDescription || '');
-    const [keyword, setKeyword] = useState(currentIssue.keyWords || []);
+    const [keyword, setKeyword] = useState(currentIssue.keyWords || ['']);
     const [priority, setPriority] = useState(currentIssue.priority || '');
     const [status, setStatus] = useState(currentIssue.status || '');
     const [assignee, setAssignee] = useState(currentIssue.assignee || '');
     const [comment, setComment] = useState('');
 
-    const [recommends, setRecommends] = useState(currentProject.devUser || []); // 기본 개발자 추천버튼 누르면 추천인으로 변경
+    const [recommends, setRecommends] = useState(currentProject.devUser || ['']); // 기본 개발자 추천버튼 누르면 추천인으로 변경
     const statusOptions = ['new', 'open', 'in-progress', 'fixed', 'resolved', 'closed', 'reopened'];
 
     // 역할에 따른 option 비활성화 상태 설정
@@ -36,12 +36,13 @@ const IssueUpdate = () => {
         if (option === 'new') return true;
         if (userRole === 'devUser' && option !== 'fixed') return true;
         if (userRole === 'testUser' && currentIssue.reporter === userData.memberName) {
-            if (option !== 'resolved' && option !== 'reopened') return true;
+            if (option !== 'reopened') return true;
+            if (option !== 'resolved') return true;
         }
         return userRole === 'plUser' && option !== 'closed';
     };
 
-    // 역할에 따른 수정권한
+    // 역할에 따른 수정 권한
     const tagDisabled = () => {
         return !(userRole === 'testUser' && currentIssue.reporter === userData.memberName);
     }
@@ -50,15 +51,9 @@ const IssueUpdate = () => {
         return userRole !== 'plUser';
     }
 
-    // 오류시 뒤로 가기
-    if (!currentIssue.issueTitle) {
-        alert("다시 시도하세요!");
-        navigate(`/Project/${currentProject.projectTitle}`);
-    }
-
     // 개발자 추천
     const recommendDeveloper = () => {
-        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`, { keyword })
+        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`, { keyWords: keyword })
             .then(response => {
                 setRecommends(response.data.devUser);
             })
@@ -79,7 +74,7 @@ const IssueUpdate = () => {
         })
             .then(response => {
                 if (userRole === 'plUser' && assignee !== currentIssue.assignee) {
-                    axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee })
+                    axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee: assignee })
                         .catch(error => {
                             console.error('assign Error:', error);
                         })
@@ -133,8 +128,14 @@ const IssueUpdate = () => {
         }
     };
 
+    // 오류시 뒤로 가기
+    if (issueTitle === '') {
+        alert("다시 시도하세요!");
+        navigate(`/Project/${currentProject.projectTitle}`);
+    }
+
     return (
-        <Paper sx={{ width: '90%', padding: 3, margin: 'auto', maxWidth: 800 }}>
+        <Paper sx={{ width: '100%', padding: 3, margin: 'auto', maxWidth: 1000 }}>
             <Typography variant="h4" gutterBottom>
                 이슈 수정
             </Typography>
