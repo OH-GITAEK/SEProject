@@ -58,9 +58,9 @@ const IssueUpdate = () => {
 
     // 개발자 추천
     const recommendDeveloper = () => {
-        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`, { keyword })
+        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`,  keyword )
             .then(response => {
-                setRecommends(response.data.devUser);
+                setRecommends(response.data.map((user) => ({ ...user, label: user.memberName })));
             })
             .catch(error => {
                 console.error('Error recommending developer:', error);
