@@ -1,5 +1,7 @@
 package com.example.seproject.gui;
 
+import com.example.seproject.issue.IssueForm;
+import com.example.seproject.issue.IssueService;
 import com.example.seproject.member.dto.MemberDTO;
 import com.example.seproject.member.entity.MemberEntity;
 import com.example.seproject.member.service.MemberService;
@@ -12,20 +14,24 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectPanel extends JPanel {
     private final ProjectService projectService;
     private final MemberService memberService;
+    private final IssueService issueService;  // IssueService 추가
 
     private JTable projectTable;
     private DefaultTableModel projectTableModel;
 
-    public ProjectPanel(ProjectService projectService, MemberService memberService) {
+    public ProjectPanel(ProjectService projectService, MemberService memberService, IssueService issueService) {
         this.projectService = projectService;
         this.memberService = memberService;
+        this.issueService = issueService;  // IssueService 초기화
         setLayout(null);
 
         JButton createProjectButton = new JButton("프로젝트 생성");
@@ -39,6 +45,10 @@ public class ProjectPanel extends JPanel {
         JButton getProjectByIdButton = new JButton("특정 프로젝트 조회");
         getProjectByIdButton.setBounds(50, 150, 400, 30);
         add(getProjectByIdButton);
+
+        JButton showIssueStatisticsButton = new JButton("이슈 통계 보기");  // 이슈 통계 버튼 추가
+        showIssueStatisticsButton.setBounds(50, 200, 400, 30);
+        add(showIssueStatisticsButton);
 
         createProjectButton.addActionListener(new ActionListener() {
             @Override
@@ -62,6 +72,21 @@ public class ProjectPanel extends JPanel {
                     try {
                         Long projectId = Long.parseLong(projectIdStr);
                         getProjectById(projectId);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Invalid Project ID format");
+                    }
+                }
+            }
+        });
+
+        showIssueStatisticsButton.addActionListener(new ActionListener() {  // 이슈 통계 버튼에 액션 추가
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String projectIdStr = JOptionPane.showInputDialog("Enter Project ID:");
+                if (projectIdStr != null && !projectIdStr.isEmpty()) {
+                    try {
+                        Long projectId = Long.parseLong(projectIdStr);
+                        showIssueStatistics(projectId);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(null, "Invalid Project ID format");
                     }
@@ -111,7 +136,6 @@ public class ProjectPanel extends JPanel {
         }
     }
 
-
     private List<MemberEntity> getUserEntitiesFromInput(String message) {
         String userInput = JOptionPane.showInputDialog(message);
         if (userInput != null && !userInput.isEmpty()) {
@@ -158,5 +182,37 @@ public class ProjectPanel extends JPanel {
         } else {
             JOptionPane.showMessageDialog(null, "Project not found");
         }
+    }
+
+    private void showIssueStatistics(Long projectId) {
+        // 프로젝트의 모든 이슈 가져오기
+        List<IssueForm> issues = issueService.getList(projectId);
+
+        // 일 별 이슈 발생 횟수 계산
+        Map<LocalDate, Long> issuesPerDay = issues.stream()
+                .collect(Collectors.groupingBy(issue -> issue.getReportedDate().toLocalDate(), Collectors.counting()));
+
+        // 월 별 이슈 발생 횟수 계산
+        Map<Month, Long> issuesPerMonth = issues.stream()
+                .collect(Collectors.groupingBy(issue -> issue.getReportedDate().getMonth(), Collectors.counting()));
+
+        // 키워드 별 이슈 발생 횟수 계산
+        Map<String, Long> issuesPerKeyword = issues.stream()
+                .flatMap(issue -> issue.getKeyWords().stream())
+                .collect(Collectors.groupingBy(keyword -> keyword, Collectors.counting()));
+
+        // 통계 결과를 보여주는 다이얼로그
+        StringBuilder statistics = new StringBuilder("Issue Statistics:\n\n");
+
+        statistics.append("Issues per Day:\n");
+        issuesPerDay.forEach((date, count) -> statistics.append(date).append(": ").append(count).append("\n"));
+
+        statistics.append("\nIssues per Month:\n");
+        issuesPerMonth.forEach((month, count) -> statistics.append(month).append(": ").append(count).append("\n"));
+
+        statistics.append("\nIssues per Keyword:\n");
+        issuesPerKeyword.forEach((keyword, count) -> statistics.append(keyword).append(": ").append(count).append("\n"));
+
+        JOptionPane.showMessageDialog(null, statistics.toString());
     }
 }
