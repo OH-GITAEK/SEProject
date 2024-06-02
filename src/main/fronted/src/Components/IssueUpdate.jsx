@@ -29,6 +29,7 @@ const IssueUpdate = () => {
     const [comment, setComment] = useState('');
 
     const [recommends, setRecommends] = useState(currentProject.devUser || []); // 기본 개발자 추천버튼 누르면 추천인으로 변경
+    const [isLoading, setIsLoading] = useState(false);
     const statusOptions = ['new', 'open', 'in-progress', 'fixed', 'resolved', 'closed', 'reopened'];
 
     // 역할에 따른 option 비활성화 상태 설정
@@ -58,18 +59,28 @@ const IssueUpdate = () => {
 
     // 개발자 추천
     const recommendDeveloper = () => {
-        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`,  keyword )
+        setIsLoading(true);
+        axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/recommend`, keyword, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => {
-                setRecommends(response.data.map((user) => ({ ...user, label: user.memberName })));
+                setRecommends(response.data.map(user => ({ ...user, label: user.memberName })));
             })
             .catch(error => {
                 console.error('Error recommending developer:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
     // 이슈 업데이트
+    // 이슈 업데이트
     const handleUpdate = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update`, {
             issueTitle: issueTitle,
             issueDescription: issueDescription,
@@ -79,10 +90,11 @@ const IssueUpdate = () => {
         })
             .then(response => {
                 if (userRole === 'plUser' && assignee !== currentIssue.assignee) {
-                    axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee })
+                    console.log('Assignee before sending request:', assignee);
+                    axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/update-dev`, { assignee: assignee.memberName })
                         .catch(error => {
-                            console.error('assign Error:', error);
-                        })
+                            console.error('assign Error:', error.response?.data || error.message);
+                        });
                 }
                 if (comment) {
                     axios.post(`/api/projects/${currentProject.id}/issues/${currentIssue.id}/comments/create`, {
@@ -104,8 +116,12 @@ const IssueUpdate = () => {
             })
             .catch(error => {
                 console.error('Error updating issue:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
+
 
     // 상태 변경
     const handleStatusChange = (event, newValue) => {
@@ -322,6 +338,7 @@ const IssueUpdate = () => {
                                         backgroundColor: '#03C75A', // 네이버 초록색 호버
                                     },
                                 }}
+                                disabled={isLoading}
                             >
                                 추천
                             </Button>
@@ -354,7 +371,9 @@ const IssueUpdate = () => {
                     '&:hover': {
                         backgroundColor: '#03C75A', // 네이버 초록색 호버
                     },
-                }}>
+                }}
+                        disabled={isLoading}
+                >
                     완료
                 </Button>
             </Box>
