@@ -26,15 +26,45 @@ public class IssueService {
     private final ProjectRepository projectRepository;
     private final MemberService memberService;
 
+    @Transactional
     public List<IssueForm> getList(Long projectId) {
-        return issueRepository.findByProjectId(projectId).stream().map(issue -> IssueForm.createIssueForm(issue)).collect(Collectors.toList());
+        List<Issue> issues = issueRepository.findByProjectId(projectId);
+        return issues.stream()
+                .map(issue -> {
+                    // 키워드 초기화
+                    List<String> keyWords = issue.getKeyWords().stream().collect(Collectors.toList());
+                    return IssueForm.builder()
+                            .id(issue.getId())
+                            .issueTitle(issue.getIssueTitle())
+                            .issueDescription(issue.getIssueDescription())
+                            .reporter(issue.getReporter().getMemberName())
+                            .assignee(issue.getAssignee() != null ? issue.getAssignee().getMemberName() : null)
+                            .status(issue.getStatus())
+                            .keyWords(keyWords) // 키워드 추가
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
-    public IssueForm getIssue(Long id) {
-        Issue issue = issueRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("이슈조회 실패! " +
-                "해당 이슈가 없습니다."));
-
-        return IssueForm.createIssueForm(issue);
+    @Transactional
+    public IssueForm getIssue(Long issueId) {
+        Issue issue = issueRepository.findById(issueId).orElse(null);
+        if (issue != null) {
+            // 키워드 초기화
+            List<String> keyWords = issue.getKeyWords().stream().collect(Collectors.toList());
+            return IssueForm.builder()
+                    .id(issue.getId())
+                    .issueTitle(issue.getIssueTitle())
+                    .issueDescription(issue.getIssueDescription())
+                    .reporter(issue.getReporter().getMemberName())
+                    .fixer(issue.getFixer() != null ? issue.getFixer().getMemberName() : null)
+                    .assignee(issue.getAssignee() != null ? issue.getAssignee().getMemberName() : null)
+                    .status(issue.getStatus())
+                    .keyWords(keyWords) // 키워드 추가
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     public IssueForm create(Long projectId, IssueForm issueForm){
