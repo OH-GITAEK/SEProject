@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -42,6 +43,19 @@ public class MemberEntity { // table 역할
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
         return memberEntity;
+    }
+    // equals와 hashCode 메서드 구현
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MemberEntity that = (MemberEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(memberName, that.memberName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, memberName);
     }
 //    @OneToMany(mappedBy = "admin")
 //    private List<Project> managedProjects;

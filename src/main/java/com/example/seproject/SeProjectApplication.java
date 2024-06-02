@@ -45,7 +45,7 @@ public class SeProjectApplication {
             tabbedPane.addTab("Members", memberPanel);
 
             // ProjectPanel 생성 및 추가
-            ProjectPanel projectPanel = new ProjectPanel(projectService, memberService);
+            ProjectPanel projectPanel = new ProjectPanel(projectService, memberService, issueService);
             tabbedPane.addTab("Projects", projectPanel);
 
             // IssuePanel 생성 및 추가

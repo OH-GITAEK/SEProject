@@ -31,13 +31,13 @@ public class Project {
 
     private LocalDateTime reportedDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<MemberEntity> plUser;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<MemberEntity> devUser;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<MemberEntity> testUser;
 
 //    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)

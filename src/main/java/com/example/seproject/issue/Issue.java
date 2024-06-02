@@ -48,7 +48,7 @@ public class Issue {
 //    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
 //    private List<Comment> commentList;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> keyWords;
 
     @ManyToOne
