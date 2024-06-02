@@ -54,7 +54,7 @@ public class IssueController {
         return issueService.update(projectId,id,issueForm);
     }
 
-    @GetMapping("/api/projects/{projectId}/issues/{id}/recommend")
+    @PostMapping("/api/projects/{projectId}/issues/{id}/recommend")
     public List<MemberDTO> recommendDevUser(@PathVariable("projectId") Long projectId,@RequestBody List<String> keyWords) {
         return issueService.recommendDevUsers(projectId,keyWords);
     }
