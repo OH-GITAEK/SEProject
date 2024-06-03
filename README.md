@@ -14,9 +14,9 @@
 소프트웨어 개발 과정에서 조직/단체의 필요에 의해 이슈 목록과 내용 등을 체계적으로 관리하는 프로그램
 
 ## 깃허브 주소 및 스웨거(api 명세) 주소
-깃허브 : https://github.com/OH-GITAEK/SEProject
-웹 서비스 주소 : http://se.term-project.p-e.kr
-스웨거(API 명세) : http://api.term-project.p-e.kr
+1. 깃허브 : https://github.com/OH-GITAEK/SEProject
+2. 웹 서비스 주소 : http://se.term-project.p-e.kr
+3. 스웨거(API 명세) : http://api.term-project.p-e.kr
 
 ## 프로젝트 기능과 설명
 - **홈페이지 로그인과 회원가입**
